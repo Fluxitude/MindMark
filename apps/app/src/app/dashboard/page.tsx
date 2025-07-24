@@ -3,7 +3,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useQueryState } from "nuqs";
 import { NavigationHeader } from "../../components/navigation-header";
 import { SearchBar } from "../../components/search-bar";
@@ -16,7 +16,7 @@ import { Button } from "@mindmark/ui/button";
 import { useBookmarks, useAuth, useCreateBookmark } from "@mindmark/supabase";
 import { ChevronRight, Brain, BookOpen, Wrench, Plus, ExternalLink } from "lucide-react";
 
-export default function DashboardPage() {
+function DashboardContent() {
   const [isAddBookmarkOpen, setIsAddBookmarkOpen] = useState(false);
 
   // URL state management with nuqs
@@ -265,5 +265,20 @@ export default function DashboardPage() {
       />
     </div>
     </ProtectedRoute>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading dashboard...</p>
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }

@@ -81,7 +81,7 @@ async function fetchBookmarks(
     throw new Error(`Failed to fetch bookmarks: ${error.message}`);
   }
 
-  return data || [];
+  return (data || []) as unknown as Database["public"]["Tables"]["bookmarks"]["Row"][];
 }
 
 // Create bookmark function
@@ -163,7 +163,12 @@ export function useCreateBookmark() {
         ai_summary: null,
         ai_summary_style: "concise",
         ai_confidence_score: 0,
-        ai_accessibility: null,
+        ai_accessibility: {
+          complexity: "moderate",
+          cognitive_load: "medium",
+          reading_level: "middle",
+          estimated_difficulty: "medium",
+        },
         ai_processing_status: "pending",
         ai_processed_at: null,
         ai_processing_error: null,

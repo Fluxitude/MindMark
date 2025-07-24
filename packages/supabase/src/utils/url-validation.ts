@@ -35,7 +35,7 @@ export function validateAndNormalizeUrl(url: string): URLValidationResult {
     if (hasProtocol) {
       // Validate protocol if already present
       const protocolMatch = normalizedUrl.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):\/\//i);
-      if (protocolMatch) {
+      if (protocolMatch && protocolMatch[1]) {
         const protocol = protocolMatch[1].toLowerCase();
         if (!["http", "https"].includes(protocol)) {
           return {

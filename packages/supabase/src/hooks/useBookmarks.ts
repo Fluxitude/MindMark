@@ -245,7 +245,12 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRet
         ai_summary: null,
         ai_summary_style: "concise",
         ai_confidence_score: 0,
-        ai_accessibility: null,
+        ai_accessibility: {
+          complexity: "moderate",
+          cognitive_load: "medium",
+          reading_level: "middle",
+          estimated_difficulty: "medium",
+        },
         ai_processing_status: "pending",
         ai_processed_at: null,
         ai_processing_error: null,
@@ -276,12 +281,14 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRet
       const insertStartTime = performance.now();
 
       // Start the database operation but don't block the UI
-      supabase
-        .from("bookmarks")
-        .insert(insertData)
-        .select()
-        .single()
-        .then(({ data: insertResult, error: insertError }) => {
+      (async () => {
+        try {
+          const { data: insertResult, error: insertError } = await supabase
+            .from("bookmarks")
+            .insert(insertData)
+            .select()
+            .single();
+
           const insertEndTime = performance.now();
           console.log(`useBookmarks: Database insert took ${insertEndTime - insertStartTime}ms`);
 
@@ -296,20 +303,19 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRet
             setBookmarks(prev => prev.map(b => b.id === optimisticBookmark.id ? realBookmark : b));
             console.log("useBookmarks: Bookmark synced successfully:", realBookmark);
           }
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error("useBookmarks: Unexpected error:", error);
           setBookmarks(prev => prev.filter(b => b.id !== optimisticBookmark.id));
-        });
+        }
+      })();
 
       // Return the optimistic bookmark immediately (UI gets instant feedback)
       console.log("useBookmarks: Returning optimistic bookmark immediately");
-      return optimisticBookmark;
-
       const totalTime = performance.now() - startTime;
       console.log(`useBookmarks: Total createBookmark took ${totalTime}ms (optimistic)`);
 
       // Note: The actual database sync happens in background
+      return optimisticBookmark;
     } catch (err) {
       const totalTime = performance.now() - startTime;
       console.log(`useBookmarks: createBookmark failed after ${totalTime}ms`);

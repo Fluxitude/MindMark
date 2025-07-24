@@ -127,11 +127,12 @@ const nextConfig = {
   // Redirects for better SEO and UX
   async redirects() {
     return [
-      {
-        source: '/dashboard',
-        destination: '/dashboard/bookmarks',
-        permanent: false,
-      },
+      // Removed dashboard redirect - dashboard page exists at /dashboard
+      // {
+      //   source: '/dashboard',
+      //   destination: '/dashboard/bookmarks',
+      //   permanent: false,
+      // },
     ]
   },
 

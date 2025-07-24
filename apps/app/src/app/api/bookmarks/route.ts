@@ -68,21 +68,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Failed to fetch bookmarks" }, { status: 500 });
     }
 
-    // Check if there are more results
-    const { count } = await supabase
-      .from("bookmarks")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("is_archived", isArchived);
-
-    const hasMore = (offset + limit) < (count || 0);
+    // Determine if there are more results based on returned data
+    // This is more efficient than a separate count query
+    const hasMore = bookmarks && bookmarks.length === limit;
 
     return NextResponse.json({
       bookmarks: bookmarks || [],
       pagination: {
         limit,
         offset,
-        total: count || 0,
+        total: null, // Remove expensive count query
         hasMore,
       },
     });

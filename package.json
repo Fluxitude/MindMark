@@ -25,11 +25,11 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
-    "@t3-oss/env-nextjs": "^0.11.1",
+    "@t3-oss/env-nextjs": "0.11.1",
     "@types/bun": "latest",
     "bun-types": "latest",
-    "turbo": "^2.1.1",
-    "typescript": "^5.6.0"
+    "turbo": "2.5.5",
+    "typescript": "5.8.3"
   },
   "packageManager": "bun@1.1.26",
   "engines": {
@@ -48,7 +48,7 @@
     "geist": "1.4.2",
     "nuqs": "2.4.3",
     "react-hook-form": "7.61.0",
-    "zod": "4.0.7",
+    "zod": "3.25.76",
     "zustand": "5.0.6"
   }
 }

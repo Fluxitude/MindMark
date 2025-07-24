@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { AuthProvider, QueryProvider } from "@mindmark/supabase";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Analytics } from "@vercel/analytics/react";
+import { MonitoringProvider } from "@/components/monitoring-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,13 +20,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={GeistSans.className}>
       <body className={GeistSans.className}>
-        <NuqsAdapter>
-          <QueryProvider>
-            <AuthProvider>
-              {children}
-            </AuthProvider>
-          </QueryProvider>
-        </NuqsAdapter>
+        <MonitoringProvider>
+          <NuqsAdapter>
+            <QueryProvider>
+              <AuthProvider>
+                {children}
+              </AuthProvider>
+            </QueryProvider>
+          </NuqsAdapter>
+        </MonitoringProvider>
+        <Analytics />
       </body>
     </html>
   );

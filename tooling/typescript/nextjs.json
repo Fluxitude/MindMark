@@ -13,7 +13,11 @@
     "module": "esnext",
     "noEmit": true,
     "resolveJsonModule": true,
-    "strict": false,
+    "strict": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "target": "es5"
   },
   "include": [

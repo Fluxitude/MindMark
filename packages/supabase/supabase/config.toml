@@ -1,0 +1,79 @@
+# MindMark Supabase Configuration
+
+project_id = "mindmark"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://localhost:3000"]
+jwt_expiry = 3600
+enable_signup = true
+# enable_confirmations = false
+
+[auth.external.google]
+enabled = false
+client_id = ""
+secret = ""
+
+[auth.external.github]
+enabled = false
+client_id = ""
+secret = ""
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54327
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[storage.image_transformation]
+enabled = true
+
+[edge_runtime]
+enabled = true
+
+[analytics]
+enabled = false
+
+# =============================================================================
+# POSTGRESQL PERFORMANCE OPTIMIZATIONS (Supabase CLI Compatible)
+# =============================================================================
+
+[db.settings]
+# Memory configuration (supported by Supabase CLI)
+shared_buffers = "256MB"
+effective_cache_size = "1GB"
+work_mem = "8MB"
+maintenance_work_mem = "64MB"
+
+# Connection configuration (supported)
+max_connections = 100
+
+# WAL configuration (supported)
+max_wal_size = "2GB"
+
+# Query optimization (supported)
+max_parallel_workers_per_gather = 2
+max_parallel_workers = 4
+max_parallel_maintenance_workers = 2
+
+# Statement timeout (supported)
+statement_timeout = "300s"

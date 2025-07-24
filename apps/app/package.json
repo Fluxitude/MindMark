@@ -1,0 +1,37 @@
+{
+  "name": "@mindmark/app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "clean": "git clean -xdf .next .turbo node_modules",
+    "lint": "biome lint",
+    "format": "biome format --write .",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed"
+  },
+  "dependencies": {
+    "@mindmark/supabase": "workspace:*",
+    "@mindmark/ui": "workspace:*",
+    "autoprefixer": "10.4.21",
+    "geist": "1.4.2",
+    "next": "^15.1.0",
+    "postcss": "8.5.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.6.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@playwright/test": "1.54.1",
+    "@types/node": "^22",
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  }
+}

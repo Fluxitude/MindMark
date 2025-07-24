@@ -1,0 +1,310 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base Grayscale Palette - OKLCH Values */
+    --base-50: oklch(0.985 0.0013 286.84);
+    --base-100: oklch(0.967 0.0027 286.38);
+    --base-200: oklch(0.92 0.0053 286.32);
+    --base-300: oklch(0.871 0.008 286.29);
+    --base-400: oklch(0.705 0.012 286.07);
+    --base-500: oklch(0.552 0.016 285.94);
+    --base-600: oklch(0.442 0.0147 285.79);
+    --base-700: oklch(0.37 0.012 285.81);
+    --base-800: oklch(0.274 0.008 286.03);
+    --base-900: oklch(0.21 0.0053 285.89);
+    --base-950: oklch(0.141 0.004 285.83);
+    --base-1000: oklch(0.096 0.0027 285.79);
+
+    /* Pure Colors */
+    --color-white: oklch(1.0000 0 0);
+    --color-black: oklch(0.0000 0 0);
+
+    /* Light Theme Semantic Tokens */
+    --background: var(--color-white);
+    --foreground: var(--base-800);
+    --card: var(--color-white);
+    --card-foreground: var(--base-800);
+    --popover: var(--color-white);
+    --popover-foreground: var(--base-800);
+    --primary: var(--base-950);
+    --primary-foreground: var(--color-white);
+    --secondary: var(--base-100);
+    --secondary-foreground: var(--base-800);
+    --muted: var(--base-50);
+    --muted-foreground: var(--base-600);
+    --accent: var(--base-50);
+    --accent-foreground: var(--base-800);
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: var(--color-white);
+    --border: var(--base-200);
+    --input: var(--base-300);
+    --ring: var(--base-800);
+
+    /* Chart Colors */
+    --chart-1: var(--base-950);
+    --chart-2: var(--base-600);
+    --chart-3: var(--base-800);
+    --chart-4: var(--base-400);
+    --chart-5: var(--base-300);
+
+    /* Border Radius (Enhanced for Better UX) */
+    --radius: 0.5rem;
+
+    /* Sidebar Tokens */
+    --sidebar: var(--base-100);
+    --sidebar-foreground: var(--base-800);
+    --sidebar-primary: var(--base-950);
+    --sidebar-primary-foreground: var(--color-white);
+    --sidebar-accent: var(--base-200);
+    --sidebar-accent-foreground: var(--base-800);
+    --sidebar-border: var(--base-200);
+    --sidebar-ring: var(--base-800);
+
+    /* Typography Tokens */
+    --display-family: "Geist", system-ui, sans-serif;
+    --display-weight: 600;
+    --text-family: "Geist", system-ui, sans-serif;
+    --text-weight: 400;
+  }
+
+  /* Dark Theme Overrides */
+  .dark {
+    --background: var(--base-950);
+    --foreground: var(--base-200);
+    --card: var(--base-950);
+    --card-foreground: var(--base-200);
+    --popover: var(--base-950);
+    --popover-foreground: var(--base-200);
+    --primary: var(--base-50);
+    --primary-foreground: var(--base-900);
+    --secondary: var(--base-800);
+    --secondary-foreground: var(--base-200);
+    --muted: var(--base-900);
+    --muted-foreground: var(--base-400);
+    --accent: var(--base-900);
+    --accent-foreground: var(--base-200);
+    --destructive: oklch(0.704 0.191 22.216);
+    --destructive-foreground: var(--color-white);
+    --border: var(--base-800);
+    --input: var(--base-700);
+    --ring: var(--base-200);
+    --chart-1: var(--base-50);
+    --chart-2: var(--base-400);
+    --chart-3: var(--base-200);
+    --chart-4: var(--base-600);
+    --chart-5: var(--base-700);
+    --sidebar: var(--base-900);
+    --sidebar-foreground: var(--base-200);
+    --sidebar-primary: var(--base-50);
+    --sidebar-primary-foreground: var(--base-900);
+    --sidebar-accent: var(--base-800);
+    --sidebar-accent-foreground: var(--base-200);
+    --sidebar-border: var(--base-800);
+    --sidebar-ring: var(--base-200);
+  }
+}
+
+/* Remove @theme inline - not needed for Tailwind CSS v3 */
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--text-family);
+    font-weight: var(--text-weight);
+  }
+
+  /* Enhanced Typography Classes */
+  .font-display {
+    font-family: var(--display-family);
+    font-weight: var(--display-weight);
+  }
+
+  .font-text {
+    font-family: var(--text-family);
+    font-weight: var(--text-weight);
+  }
+
+  /* Heading Hierarchy */
+  .heading-1 {
+    font-family: var(--display-family);
+    font-weight: var(--display-weight);
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+
+  .heading-2 {
+    font-family: var(--display-family);
+    font-weight: var(--display-weight);
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+
+  .heading-3 {
+    font-family: var(--display-family);
+    font-weight: var(--display-weight);
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  /* Body Text */
+  .body-text {
+    font-family: var(--text-family);
+    font-weight: var(--text-weight);
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .body-text-sm {
+    font-family: var(--text-family);
+    font-weight: var(--text-weight);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  /* Focus Management */
+  .focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Enhanced Shadow System */
+@layer base {
+  :root {
+    /* Subtle shadows for better depth perception */
+    --shadow-2xs: 0px 1px 2px 0px oklch(0 0% 0% / 0.05);
+    --shadow-xs: 0px 1px 3px 0px oklch(0 0% 0% / 0.1), 0px 1px 2px -1px oklch(0 0% 0% / 0.1);
+    --shadow-sm: 0px 1px 3px 0px oklch(0 0% 0% / 0.1), 0px 1px 2px -1px oklch(0 0% 0% / 0.1);
+    --shadow: 0px 1px 3px 0px oklch(0 0% 0% / 0.1), 0px 1px 2px -1px oklch(0 0% 0% / 0.1);
+    --shadow-md: 0px 4px 6px -1px oklch(0 0% 0% / 0.1), 0px 2px 4px -2px oklch(0 0% 0% / 0.1);
+    --shadow-lg: 0px 10px 15px -3px oklch(0 0% 0% / 0.1), 0px 4px 6px -4px oklch(0 0% 0% / 0.1);
+    --shadow-xl: 0px 20px 25px -5px oklch(0 0% 0% / 0.1), 0px 8px 10px -6px oklch(0 0% 0% / 0.1);
+    --shadow-2xl: 0px 25px 50px -12px oklch(0 0% 0% / 0.25);
+    --shadow-inner: inset 0px 2px 4px 0px oklch(0 0% 0% / 0.05);
+
+    /* Focus shadow for accessibility */
+    --shadow-focus: 0px 0px 0px 2px var(--ring);
+  }
+}
+
+/* Responsive Design & Mobile Optimization */
+@layer utilities {
+  /* Touch-friendly sizing */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .touch-target-sm {
+    min-height: 32px;
+    min-width: 32px;
+  }
+
+  .touch-target-lg {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Mobile-first text sizing */
+  .text-mobile-safe {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Cognitive-friendly spacing */
+  .spacing-cognitive {
+    padding: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .spacing-cognitive {
+      padding: 1.5rem;
+    }
+  }
+
+  /* Safe area insets for mobile devices */
+  .safe-area-inset {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --foreground: var(--color-black);
+    --background: var(--color-white);
+    --border: var(--base-900);
+  }
+
+  .dark {
+    --foreground: var(--color-white);
+    --background: var(--color-black);
+    --border: var(--base-100);
+  }
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 767px) {
+  /* Ensure touch targets are large enough */
+  button,
+  input,
+  select,
+  textarea,
+  a[role="button"],
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent zoom on form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  /* Optimize spacing for mobile */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}

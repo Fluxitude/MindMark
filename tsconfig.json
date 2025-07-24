@@ -1,0 +1,16 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/app" },
+    { "path": "./apps/web" },
+    { "path": "./apps/extension" },
+    { "path": "./packages/ui" },
+    { "path": "./packages/supabase" },
+    { "path": "./packages/ai" },
+    { "path": "./packages/content" },
+    { "path": "./packages/workflows" },
+    { "path": "./packages/search" },
+    { "path": "./packages/extension-utils" },
+    { "path": "./packages/logger" }
+  ]
+}

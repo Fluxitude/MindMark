@@ -1,0 +1,45 @@
+# MindMark Bun Configuration
+# Global configuration for Bun runtime and testing
+
+[install]
+# Use exact versions for reproducible builds
+exact = true
+
+# Prefer offline packages when available
+prefer-offline = true
+
+# Auto-install peer dependencies
+auto = true
+
+[test]
+# Test configuration using Bun's built-in test runner
+preload = ["./test/setup.ts"]
+timeout = 30000
+
+# Test file patterns
+include = [
+  "**/*.test.{js,jsx,ts,tsx}",
+  "**/*.spec.{js,jsx,ts,tsx}",
+  "**/test/**/*.{js,jsx,ts,tsx}"
+]
+
+exclude = [
+  "**/node_modules/**",
+  "**/.next/**",
+  "**/.turbo/**",
+  "**/dist/**",
+  "**/build/**",
+  "**/.output/**",
+  "**/.wxt/**"
+]
+
+[run]
+# Runtime configuration
+shell = "system"
+
+# Environment variables
+env = { NODE_ENV = "development" }
+
+[test.env]
+# Test-specific environment variables
+NODE_ENV = "test"

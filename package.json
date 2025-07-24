@@ -1,0 +1,54 @@
+{
+  "name": "mindmark",
+  "private": true,
+  "workspaces": ["packages/*", "apps/*", "tooling/*"],
+  "scripts": {
+    "build": "turbo build",
+    "clean": "git clean -xdf node_modules",
+    "clean:workspaces": "turbo clean",
+    "dev": "turbo dev --parallel",
+    "dev:web": "turbo dev --filter=@mindmark/web",
+    "dev:app": "turbo dev --filter=@mindmark/app",
+    "dev:extension": "turbo dev --filter=@mindmark/browser-extension",
+    "start:web": "turbo start --filter=@mindmark/web",
+    "start:app": "turbo start --filter=@mindmark/app",
+    "test": "turbo test --parallel",
+    "format": "biome format --write .",
+    "lint": "turbo lint && bun lint:repo",
+    "lint:repo": "bunx sherif@latest",
+    "lint:repo:fix": "bunx sherif@latest --fix",
+    "typecheck": "turbo typecheck",
+    "ai:dev": "turbo dev --filter=@mindmark/ai",
+    "content:dev": "turbo dev --filter=@mindmark/content",
+    "workflows:dev": "turbo dev --filter=@mindmark/workflows",
+    "extension-utils:dev": "turbo dev --filter=@mindmark/extension-utils"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@t3-oss/env-nextjs": "^0.11.1",
+    "@types/bun": "latest",
+    "bun-types": "latest",
+    "turbo": "^2.1.1",
+    "typescript": "^5.6.0"
+  },
+  "packageManager": "bun@1.1.26",
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.1.0"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "5.1.1",
+    "@radix-ui/react-label": "2.1.7",
+    "@radix-ui/react-slot": "1.2.3",
+    "@sentry/nextjs": "9.41.0",
+    "@supabase/supabase-js": "2.52.1",
+    "@tanstack/react-query": "5.83.0",
+    "@tanstack/react-query-devtools": "5.83.0",
+    "class-variance-authority": "0.7.1",
+    "geist": "1.4.2",
+    "nuqs": "2.4.3",
+    "react-hook-form": "7.61.0",
+    "zod": "4.0.7",
+    "zustand": "5.0.6"
+  }
+}

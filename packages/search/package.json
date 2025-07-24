@@ -1,0 +1,31 @@
+{
+  "name": "@mindmark/search",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "biome lint",
+    "format": "biome format --write .",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "ai": "^4.0.0",
+    "@ai-sdk/openai": "^0.0.66",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "^5.6.0",
+    "@biomejs/biome": "1.8.3"
+  },
+  "exports": {
+    "./semantic": "./src/services/semantic.ts",
+    "./embeddings": "./src/services/embeddings.ts",
+    "./indexing": "./src/services/indexing.ts",
+    "./query": "./src/services/query.ts",
+    "./types": "./src/types/index.ts"
+  }
+}

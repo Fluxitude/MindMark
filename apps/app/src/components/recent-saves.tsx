@@ -3,7 +3,7 @@
 
 "use client";
 
-import { useBookmarks } from "@mindmark/supabase";
+import { useLegacyBookmarks as useBookmarks } from "@mindmark/supabase";
 import { BookmarkCard } from "./bookmark-card";
 
 interface RecentSavesProps {

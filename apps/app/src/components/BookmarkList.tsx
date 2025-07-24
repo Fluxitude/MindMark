@@ -4,7 +4,7 @@
 "use client";
 
 import { useState } from "react";
-import { useBookmarks } from "@mindmark/supabase";
+import { useLegacyBookmarks as useBookmarks } from "@mindmark/supabase";
 
 interface BookmarkListProps {
   collectionId?: string;

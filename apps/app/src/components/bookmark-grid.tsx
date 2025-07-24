@@ -3,7 +3,7 @@
 
 "use client";
 
-import { useBookmarks } from "@mindmark/supabase";
+import { useLegacyBookmarks as useBookmarks } from "@mindmark/supabase";
 import { BookmarkCard } from "./bookmark-card";
 
 interface BookmarkGridProps {
@@ -13,12 +13,19 @@ interface BookmarkGridProps {
   limit?: number;
 }
 
-export function BookmarkGrid({ 
-  searchQuery, 
-  collectionId, 
+export function BookmarkGrid({
+  searchQuery,
+  collectionId,
   isArchived = false,
-  limit = 20 
+  limit = 20
 }: BookmarkGridProps) {
+  const bookmarkData = useBookmarks({
+    search: searchQuery,
+    collectionId: collectionId || undefined,
+    isArchived,
+    limit,
+  });
+
   const {
     bookmarks,
     loading,
@@ -27,13 +34,7 @@ export function BookmarkGrid({
     loadMore,
     updateBookmark,
     deleteBookmark,
-  } = useBookmarks({
-    search: searchQuery,
-    collectionId: collectionId || undefined,
-    isArchived,
-    limit,
-    realtime: true,
-  });
+  } = bookmarkData;
 
   const handleToggleFavorite = async (id: string, isFavorite: boolean) => {
     try {

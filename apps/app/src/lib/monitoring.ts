@@ -14,15 +14,15 @@ export const freeMonitoring = {
     }
 
     // Send to Vercel Analytics (FREE tier)
-    if (typeof window !== 'undefined' && window.va) {
-      window.va('track', name, { value })
+    if (typeof window !== 'undefined' && (window as any).va) {
+      (window as any).va('track', name)
     }
 
     // Log performance issues
     const thresholds = {
       FCP: 1500, // First Contentful Paint
       LCP: 2500, // Largest Contentful Paint
-      FID: 100,  // First Input Delay
+      INP: 200,  // Interaction to Next Paint (replaces FID)
       CLS: 0.1,  // Cumulative Layout Shift
       TTFB: 600, // Time to First Byte
     }
@@ -127,8 +127,8 @@ export const freeMonitoring = {
     console.log('👤 User Action:', actionData)
 
     // Send to Vercel Analytics (FREE tier)
-    if (typeof window !== 'undefined' && window.va) {
-      window.va('track', action, data)
+    if (typeof window !== 'undefined' && (window as any).va) {
+      (window as any).va('track', action)
     }
   },
 
@@ -160,12 +160,12 @@ export const freeMonitoring = {
 export function useWebVitals() {
   if (typeof window !== 'undefined') {
     // Dynamically import web-vitals to avoid SSR issues
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(freeMonitoring.trackWebVitals)
-      getFID(freeMonitoring.trackWebVitals)
-      getFCP(freeMonitoring.trackWebVitals)
-      getLCP(freeMonitoring.trackWebVitals)
-      getTTFB(freeMonitoring.trackWebVitals)
+    import('web-vitals').then((webVitals) => {
+      if (webVitals.onCLS) webVitals.onCLS(freeMonitoring.trackWebVitals)
+      if (webVitals.onINP) webVitals.onINP(freeMonitoring.trackWebVitals) // FID is deprecated, use INP
+      if (webVitals.onFCP) webVitals.onFCP(freeMonitoring.trackWebVitals)
+      if (webVitals.onLCP) webVitals.onLCP(freeMonitoring.trackWebVitals)
+      if (webVitals.onTTFB) webVitals.onTTFB(freeMonitoring.trackWebVitals)
     }).catch(error => {
       console.warn('Failed to load web-vitals:', error)
     })

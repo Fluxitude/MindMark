@@ -145,7 +145,7 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRet
 
       console.log("✅ useBookmarks: Query successful, found", data?.length || 0, "bookmarks");
 
-      const bookmarksData = data || [];
+      const bookmarksData = (data || []) as Bookmark[];
 
       if (append) {
         setBookmarks(prev => [...prev, ...bookmarksData]);

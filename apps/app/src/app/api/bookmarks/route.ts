@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { url, title, description, content_type, collection_id } = validationResult.data;
+    const { url, title, description, content_type } = validationResult.data;
 
     // Check if bookmark already exists for this user
     const { data: existingBookmark } = await supabase
@@ -135,7 +135,6 @@ export async function POST(request: NextRequest) {
         description,
         content_type: content_type || "webpage",
         user_id: user.id,
-        collection_id,
         is_favorite: false,
         is_archived: false,
       })

@@ -21,7 +21,8 @@ function rateLimit(ip: string, limit = 50, window = 60000): boolean {
   // Cleanup old entries to prevent memory leaks
   if (rateLimitMap.size > 10000) {
     const cutoff = now - window * 2
-    for (const [key, times] of rateLimitMap.entries()) {
+    const entries = Array.from(rateLimitMap.entries())
+    for (const [key, times] of entries) {
       const validTimes = times.filter(time => time > cutoff)
       if (validTimes.length === 0) {
         rateLimitMap.delete(key)
@@ -35,14 +36,20 @@ function rateLimit(ip: string, limit = 50, window = 60000): boolean {
 }
 
 export async function middleware(request: NextRequest) {
-  const ip = request.ip ?? '127.0.0.1'
+  const ip = request.headers.get('x-forwarded-for') ??
+             request.headers.get('x-real-ip') ??
+             '127.0.0.1'
   const pathname = request.nextUrl.pathname
   
   // Rate limiting for API routes (FREE protection against abuse)
   if (pathname.startsWith('/api/')) {
     // More restrictive rate limiting for API routes
     if (!rateLimit(ip, 30, 60000)) {
-      return new Response('Too Many Requests', { 
+      return new Response(JSON.stringify({
+        error: 'Too Many Requests',
+        message: 'Rate limit exceeded. Please try again later.',
+        retryAfter: 60
+      }), {
         status: 429,
         headers: {
           'Retry-After': '60',
@@ -50,12 +57,7 @@ export async function middleware(request: NextRequest) {
           'X-RateLimit-Remaining': '0',
           'X-RateLimit-Reset': String(Math.ceil(Date.now() / 1000) + 60),
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          error: 'Too Many Requests',
-          message: 'Rate limit exceeded. Please try again later.',
-          retryAfter: 60
-        })
+        }
       })
     }
   }

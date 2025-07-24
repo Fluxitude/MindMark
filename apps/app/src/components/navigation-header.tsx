@@ -3,6 +3,7 @@
 
 "use client";
 
+import Link from "next/link";
 import { Button } from "@mindmark/ui/button";
 import { Settings, LogOut, User } from "lucide-react";
 import { useAuth } from "@mindmark/supabase";
@@ -29,7 +30,7 @@ export function NavigationHeader({ currentPage = "dashboard" }: NavigationHeader
 
           {/* Navigation Tabs */}
           <nav className="flex items-center space-x-6">
-            <a
+            <Link
               href="/dashboard"
               className={`relative py-2 px-1 text-sm font-medium transition-all duration-200 hover:text-foreground ${
                 currentPage === "dashboard"
@@ -38,8 +39,8 @@ export function NavigationHeader({ currentPage = "dashboard" }: NavigationHeader
               }`}
             >
               Dashboard
-            </a>
-            <a
+            </Link>
+            <Link
               href="/collections"
               className={`relative py-2 px-1 text-sm font-medium transition-all duration-200 hover:text-foreground ${
                 currentPage === "collections"
@@ -48,8 +49,8 @@ export function NavigationHeader({ currentPage = "dashboard" }: NavigationHeader
               }`}
             >
               Collections
-            </a>
-            <a
+            </Link>
+            <Link
               href="/digest"
               className={`relative py-2 px-1 text-sm font-medium transition-all duration-200 hover:text-foreground ${
                 currentPage === "digest"
@@ -58,7 +59,7 @@ export function NavigationHeader({ currentPage = "dashboard" }: NavigationHeader
               }`}
             >
               Digest
-            </a>
+            </Link>
           </nav>
         </div>
 

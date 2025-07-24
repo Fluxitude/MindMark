@@ -6,16 +6,16 @@ import { createSupabaseClient } from "@mindmark/supabase";
 import { updateBookmarkSchema } from "@mindmark/supabase/schemas";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = createSupabaseClient();
     const body = await request.json();
-    const { id } = params;
+    const { id } = await params;
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -88,7 +88,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = createSupabaseClient();
-    const { id } = params;
+    const { id } = await params;
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();

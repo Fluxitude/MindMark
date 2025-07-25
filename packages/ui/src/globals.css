@@ -172,6 +172,29 @@
     --color-white: oklch(1.0000 0 0);
     --color-black: oklch(0.0000 0 0);
 
+    /* Semantic Color System for Cognitive Accessibility */
+    /* Core Brand Colors */
+    --brand-primary: oklch(0.6 0.15 220);
+    --brand-secondary: oklch(0.7 0.12 280);
+
+    /* Semantic Actions */
+    --semantic-success: oklch(0.65 0.15 140);
+    --semantic-warning: oklch(0.75 0.15 80);
+    --semantic-danger: oklch(0.6 0.18 20);
+    --semantic-info: oklch(0.65 0.12 240);
+
+    /* Cognitive Support Colors */
+    --cognitive-focus: oklch(0.7 0.15 260);
+    --cognitive-memory: oklch(0.75 0.12 60);
+    --cognitive-calm: oklch(0.8 0.05 180);
+
+    /* Content Type Colors */
+    --content-article: oklch(0.65 0.12 240);
+    --content-video: oklch(0.7 0.15 30);
+    --content-tool: oklch(0.7 0.12 280);
+    --content-reference: oklch(0.65 0.15 140);
+    --content-personal: oklch(0.6 0.03 220);
+
     /* Light Theme Semantic Tokens */
     --background: var(--color-white);
     --foreground: var(--base-800);

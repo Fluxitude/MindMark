@@ -5,6 +5,7 @@
 
 import Link from "next/link";
 import { Button } from "@mindmark/ui/button";
+import { UserProfile } from "@mindmark/ui/user-profile";
 import { Settings, LogOut, User } from "lucide-react";
 import { useAuth } from "@mindmark/supabase";
 
@@ -74,41 +75,19 @@ export function NavigationHeader({ currentPage = "dashboard" }: NavigationHeader
             <Settings className="h-4 w-4" />
           </Button>
 
-          {/* User Info */}
-          {user && (
-            <div className="flex items-center space-x-3">
-              {/* User Avatar & Name */}
-              <div className="flex items-center space-x-2">
-                <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center border border-border/50">
-                  {user?.user_metadata?.avatar_url ? (
-                    <img
-                      src={user.user_metadata.avatar_url}
-                      alt="Avatar"
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                  ) : (
-                    <User className="h-4 w-4 text-primary" />
-                  )}
-                </div>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-medium text-foreground">
-                    {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Logout Button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={signOut}
-                className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive transition-colors"
-                title="Sign out"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
+          {/* User Profile */}
+          <UserProfile
+            user={user ? {
+              id: user.id,
+              email: user.email || undefined,
+              name: user.user_metadata?.full_name || user.user_metadata?.name || undefined,
+              avatar_url: user.user_metadata?.avatar_url || undefined,
+              created_at: user.created_at,
+            } : null}
+            variant="dropdown"
+            onSignOut={signOut}
+            showThemeToggle={false}
+          />
         </div>
       </div>
     </header>

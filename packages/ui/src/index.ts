@@ -12,6 +12,7 @@ export * from "./components/label";
 export * from "./components/form";
 export * from "./components/theme-toggle";
 export * from "./components/responsive-layout";
+export * from "./components/user-profile";
 export * from "./components/badge";
 export * from "./components/dropdown-menu";
 export * from "./components/avatar";

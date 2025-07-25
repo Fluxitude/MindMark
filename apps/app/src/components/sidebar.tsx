@@ -10,7 +10,9 @@ import { usePathname } from "next/navigation";
 import { Button } from "@mindmark/ui/button";
 import { Badge } from "@mindmark/ui/badge";
 import { cn } from "@mindmark/ui/cn";
+import { UserProfile } from "@mindmark/ui/user-profile";
 import { useCollections } from "@mindmark/supabase";
+import { useAuth } from "@mindmark/supabase";
 import { CreateCollectionDialog } from "./collections/create-collection-dialog";
 import {
   ChevronLeft,
@@ -40,6 +42,9 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   const [isResizing, setIsResizing] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+
+  // Authentication
+  const { user, signOut } = useAuth();
 
   // Fetch collections data
   const { collections, loading: collectionsLoading, error: collectionsError } = useCollections({ isArchived: false });
@@ -223,7 +228,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
           )}
         </div>
 
-        {/* User Profile Section - Enhanced Cult UI */}
+        {/* User Profile Section - Dynamic with UserProfile Component */}
         <div className={cn(
           "border-b border-white/60 dark:border-neutral-700/50",
           "bg-gradient-to-b from-neutral-50/50 to-neutral-100/50 dark:from-neutral-900/50 dark:to-neutral-800/50",
@@ -231,23 +236,33 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         )}>
           {collapsed ? (
             <div className="flex justify-center">
-              <div
-                className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center cursor-pointer hover:bg-primary/20 transition-colors"
-                title="Delali Klinogs - 9 bookmarks saved"
-              >
-                <User className="h-4 w-4 text-primary" />
-              </div>
+              <UserProfile
+                user={user ? {
+                  id: user.id,
+                  email: user.email || undefined,
+                  name: user.user_metadata?.full_name || user.user_metadata?.name || undefined,
+                  avatar_url: user.user_metadata?.avatar_url || undefined,
+                  created_at: user.created_at,
+                } : null}
+                variant="dropdown"
+                onSignOut={signOut}
+                showThemeToggle={false}
+                className="w-8 h-8"
+              />
             </div>
           ) : (
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                <span className="text-primary font-medium text-sm">DK</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">Delali Klinogs</p>
-                <p className="text-xs text-muted-foreground truncate">9 bookmarks saved</p>
-              </div>
-            </div>
+            <UserProfile
+              user={user ? {
+                id: user.id,
+                email: user.email || undefined,
+                name: user.user_metadata?.full_name || user.user_metadata?.name || undefined,
+                avatar_url: user.user_metadata?.avatar_url || undefined,
+                created_at: user.created_at,
+              } : null}
+              variant="compact"
+              onSignOut={signOut}
+              showThemeToggle={true}
+            />
           )}
         </div>
 

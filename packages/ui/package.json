@@ -47,6 +47,7 @@
     "./sidebar": "./src/components/sidebar.tsx",
     "./theme-toggle": "./src/components/theme-toggle.tsx",
     "./responsive-layout": "./src/components/responsive-layout.tsx",
+    "./user-profile": "./src/components/user-profile.tsx",
     "./auth/login-form": "./src/components/auth/login-form.tsx",
     "./icons": "./src/components/icons.tsx",
     "./cult/minimal-card": "./src/components/cult/minimal-card.tsx",

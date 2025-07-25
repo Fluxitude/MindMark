@@ -2,48 +2,131 @@
 
 import * as React from "react";
 import { Button } from "./button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./dropdown-menu";
 import { cn } from "../utils/cn";
+import { Monitor, Moon, Sun, Check } from "lucide-react";
+
+type Theme = "light" | "dark" | "system";
 
 interface ThemeToggleProps extends React.ComponentProps<typeof Button> {
-  theme?: "light" | "dark" | "system";
-  onThemeChange?: (theme: "light" | "dark" | "system") => void;
+  theme?: Theme;
+  onThemeChange?: (theme: Theme) => void;
+  variant?: "toggle" | "dropdown";
+}
+
+// Hook for theme management
+export function useTheme() {
+  const [theme, setTheme] = React.useState<Theme>("system");
+  const [resolvedTheme, setResolvedTheme] = React.useState<"light" | "dark">("light");
+
+  const applyTheme = React.useCallback((newTheme: Theme) => {
+    let resolved: "light" | "dark";
+
+    if (newTheme === "system") {
+      resolved = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    } else {
+      resolved = newTheme;
+    }
+
+    setResolvedTheme(resolved);
+
+    if (resolved === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+    localStorage.setItem("theme", newTheme);
+  }, []);
+
+  const changeTheme = React.useCallback((newTheme: Theme) => {
+    setTheme(newTheme);
+    applyTheme(newTheme);
+  }, [applyTheme]);
+
+  // Initialize theme on mount
+  React.useEffect(() => {
+    const stored = localStorage.getItem("theme") as Theme | null;
+    const initialTheme = stored || "system";
+
+    setTheme(initialTheme);
+    applyTheme(initialTheme);
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      if (theme === "system") {
+        applyTheme("system");
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [theme, applyTheme]);
+
+  return { theme, resolvedTheme, changeTheme };
 }
 
 const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
-  ({ className, theme = "system", onThemeChange, ...props }, ref) => {
-    const [currentTheme, setCurrentTheme] = React.useState(theme);
+  ({ className, theme: controlledTheme, onThemeChange, variant = "toggle", ...props }, ref) => {
+    const { theme, resolvedTheme, changeTheme } = useTheme();
+    const currentTheme = controlledTheme ?? theme;
+
+    const handleThemeChange = (newTheme: Theme) => {
+      if (controlledTheme === undefined) {
+        changeTheme(newTheme);
+      }
+      onThemeChange?.(newTheme);
+    };
 
     const toggleTheme = () => {
       const newTheme = currentTheme === "light" ? "dark" : "light";
-      setCurrentTheme(newTheme);
-      onThemeChange?.(newTheme);
-      
-      // Apply theme to document
-      if (newTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-      
-      // Store preference
-      localStorage.setItem("theme", newTheme);
+      handleThemeChange(newTheme);
     };
 
-    // Initialize theme on mount
-    React.useEffect(() => {
-      const stored = localStorage.getItem("theme") as "light" | "dark" | null;
-      const systemPreference = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      const initialTheme = stored || systemPreference;
-      
-      setCurrentTheme(initialTheme);
-      
-      if (initialTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    }, []);
+    if (variant === "dropdown") {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              ref={ref}
+              variant="outline"
+              size="icon"
+              className={cn(
+                "relative transition-colors",
+                "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                className
+              )}
+              aria-label="Theme options"
+              {...props}
+            >
+              {currentTheme === "light" && <Sun className="h-4 w-4" />}
+              {currentTheme === "dark" && <Moon className="h-4 w-4" />}
+              {currentTheme === "system" && <Monitor className="h-4 w-4" />}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => handleThemeChange("light")}>
+              <Sun className="mr-2 h-4 w-4" />
+              Light
+              {currentTheme === "light" && <Check className="ml-auto h-4 w-4" />}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
+              <Moon className="mr-2 h-4 w-4" />
+              Dark
+              {currentTheme === "dark" && <Check className="ml-auto h-4 w-4" />}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleThemeChange("system")}>
+              <Monitor className="mr-2 h-4 w-4" />
+              System
+              {currentTheme === "system" && <Check className="ml-auto h-4 w-4" />}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    }
 
+    // Toggle variant (simple light/dark switch)
     return (
       <Button
         ref={ref}
@@ -55,37 +138,24 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
           "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           className
         )}
-        aria-label={`Switch to ${currentTheme === "light" ? "dark" : "light"} theme`}
+        aria-label={`Switch to ${resolvedTheme === "light" ? "dark" : "light"} theme`}
         {...props}
       >
         {/* Sun icon for light mode */}
-        <svg
+        <Sun
           className={cn(
             "h-4 w-4 transition-all",
-            currentTheme === "dark" ? "rotate-90 scale-0" : "rotate-0 scale-100"
+            resolvedTheme === "dark" ? "rotate-90 scale-0" : "rotate-0 scale-100"
           )}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <circle cx="12" cy="12" r="5" />
-          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-        </svg>
-        
+        />
+
         {/* Moon icon for dark mode */}
-        <svg
+        <Moon
           className={cn(
             "absolute h-4 w-4 transition-all",
-            currentTheme === "dark" ? "rotate-0 scale-100" : "-rotate-90 scale-0"
+            resolvedTheme === "dark" ? "rotate-0 scale-100" : "-rotate-90 scale-0"
           )}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
+        />
       </Button>
     );
   }
@@ -93,5 +163,5 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
 
 ThemeToggle.displayName = "ThemeToggle";
 
-export { ThemeToggle };
-export type { ThemeToggleProps };
+export { ThemeToggle, useTheme };
+export type { ThemeToggleProps, Theme };

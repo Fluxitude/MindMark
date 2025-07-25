@@ -4,27 +4,50 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../utils/cn";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  // Cult UI base button styling with comprehensive neomorphic design
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          // Cult UI primary button with signature neomorphic depth
+          "bg-neutral-50 dark:bg-neutral-800 text-foreground border border-white/60 dark:border-neutral-700/50 rounded-[16px] " +
+          "shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.5)] " +
+          "dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1),0_2px_2px_0_rgba(0,0,0,0.1)] " +
+          "hover:shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1),0px_2px_4px_0px_rgba(255,252,240,0.6)_inset] " +
+          "dark:hover:shadow-[0_2px_0_0_rgba(255,255,255,0.05)_inset,0_0_0_1px_rgba(255,255,255,0.05)_inset,0_4px_8px_0_rgba(0,0,0,0.15)] " +
+          "hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]",
         destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          // Destructive with Cult UI neomorphic styling
+          "bg-red-500 text-white border border-red-400/50 rounded-[16px] " +
+          "shadow-[0px_1px_1px_0px_rgba(0,0,0,0.1),0px_1px_1px_0px_rgba(255,255,255,0.2)_inset] " +
+          "hover:shadow-[0px_2px_4px_0px_rgba(0,0,0,0.15),0px_2px_4px_0px_rgba(255,255,255,0.3)_inset] " +
+          "hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          // Outline variant with subtle Cult UI effect
+          "border border-neutral-300 dark:border-neutral-600 bg-transparent rounded-[16px] " +
+          "shadow-[0px_1px_1px_0px_rgba(0,0,0,0.03)] dark:shadow-[0px_1px_1px_0px_rgba(255,255,255,0.03)] " +
+          "hover:bg-neutral-50 dark:hover:bg-neutral-800/50 hover:shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] " +
+          "hover:-translate-y-0.5 active:translate-y-0",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          // Secondary with soft Cult UI styling
+          "bg-neutral-100 dark:bg-neutral-700 text-foreground border border-neutral-200 dark:border-neutral-600 rounded-[16px] " +
+          "shadow-[0px_1px_1px_0px_rgba(0,0,0,0.03)] dark:shadow-[0px_1px_1px_0px_rgba(255,255,255,0.03)] " +
+          "hover:bg-neutral-200 dark:hover:bg-neutral-600 hover:shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] " +
+          "hover:-translate-y-0.5 active:translate-y-0",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          // Ghost variant with minimal Cult UI effect
+          "rounded-[16px] hover:bg-neutral-100 dark:hover:bg-neutral-800 " +
+          "hover:shadow-[0px_1px_2px_0px_rgba(0,0,0,0.03)] dark:hover:shadow-[0px_1px_2px_0px_rgba(255,255,255,0.03)] " +
+          "hover:-translate-y-0.5 active:translate-y-0",
+        link: "text-primary underline-offset-4 hover:underline rounded-[8px]",
       },
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9",
+        // Cult UI proportions with signature border radius
+        default: "h-10 px-6 py-2 has-[>svg]:px-4 text-sm",
+        sm: "h-8 px-4 py-1.5 has-[>svg]:px-3 text-xs rounded-[12px]",
+        lg: "h-12 px-8 py-3 has-[>svg]:px-6 text-base rounded-[20px]",
+        icon: "size-10 rounded-[16px]",
       },
     },
     defaultVariants: {

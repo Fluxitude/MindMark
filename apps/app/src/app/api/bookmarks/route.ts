@@ -2,12 +2,12 @@
 // Handles GET (fetch bookmarks) and POST (create bookmark) requests
 
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseClient } from "@mindmark/supabase";
+import { createSupabaseServerClient } from "@mindmark/supabase";
 import { createBookmarkSchema } from "@mindmark/supabase/schemas";
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createSupabaseClient();
+    const supabase = createSupabaseServerClient(request);
     const { searchParams } = new URL(request.url);
     
     // Parse query parameters
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createSupabaseClient();
+    const supabase = createSupabaseServerClient(request);
     const body = await request.json();
 
     // Get current user

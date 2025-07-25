@@ -33,10 +33,10 @@ export const createSupabaseServerClient = () => {
   });
 };
 
-// Admin client for administrative operations
-export const createSupabaseAdminClient = () => {
+// Service key client for admin operations
+export const createSupabaseServiceClient = () => {
   if (!supabaseServiceKey) {
-    throw new Error("Missing SUPABASE_SERVICE_KEY for admin operations");
+    throw new Error("Missing SUPABASE_SERVICE_KEY for server operations");
   }
 
   return createClient<Database>(supabaseUrl, supabaseServiceKey, {
@@ -46,6 +46,9 @@ export const createSupabaseAdminClient = () => {
     },
   });
 };
+
+// Admin client for administrative operations (alias for service client)
+export const createSupabaseAdminClient = createSupabaseServiceClient;
 
 // Default client instance
 export const supabase = createSupabaseClient();

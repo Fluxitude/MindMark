@@ -2,11 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createSupabaseClient } from "../client";
 import { useAuth } from "../providers/auth-provider";
 import type { Database } from "../types";
-import { createBookmarkSchema } from "../schemas";
+import { createBookmarkSchema, updateBookmarkSchema } from "../schemas";
 import { z } from "zod";
 
 type Bookmark = Database["public"]["Tables"]["bookmarks"]["Row"];
 type CreateBookmarkInput = z.infer<typeof createBookmarkSchema>;
+type UpdateBookmarkInput = z.infer<typeof updateBookmarkSchema>;
 
 // Query keys for consistent caching
 export const bookmarkKeys = {
@@ -113,6 +114,57 @@ async function createBookmark(userId: string, data: CreateBookmarkInput): Promis
   return bookmark;
 }
 
+// Update bookmark function
+async function updateBookmark(userId: string, bookmarkId: string, data: UpdateBookmarkInput): Promise<Bookmark> {
+  const supabase = createSupabaseClient();
+
+  console.log("🔄 updateBookmark: Starting with data:", data);
+  const startTime = performance.now();
+
+  const { data: bookmark, error } = await supabase
+    .from("bookmarks")
+    .update({
+      ...data,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", bookmarkId)
+    .eq("user_id", userId)
+    .select()
+    .single();
+
+  const endTime = performance.now();
+  console.log(`✅ updateBookmark: Completed in ${endTime - startTime}ms`);
+
+  if (error) {
+    console.error("🔴 updateBookmark: Update error:", error);
+    throw new Error(`Failed to update bookmark: ${error.message}`);
+  }
+
+  return bookmark;
+}
+
+// Delete bookmark function
+async function deleteBookmark(userId: string, bookmarkId: string): Promise<void> {
+  const supabase = createSupabaseClient();
+
+  console.log("🔄 deleteBookmark: Starting for bookmark:", bookmarkId);
+  const startTime = performance.now();
+
+  const { error } = await supabase
+    .from("bookmarks")
+    .delete()
+    .eq("id", bookmarkId)
+    .eq("user_id", userId);
+
+  const endTime = performance.now();
+  console.log(`✅ deleteBookmark: Completed in ${endTime - startTime}ms`);
+
+  if (error) {
+    console.error("🔴 deleteBookmark: Delete error:", error);
+    throw new Error(`Failed to delete bookmark: ${error.message}`);
+  }
+}
+
 // React Query hooks
 export function useBookmarks(options: {
   limit?: number;
@@ -217,6 +269,113 @@ export function useCreateBookmark() {
     },
     onSettled: () => {
       console.log("🔄 useCreateBookmark: Settled, invalidating queries");
+      // Always refetch after mutation settles
+      queryClient.invalidateQueries({ queryKey: bookmarkKeys.lists() });
+    },
+  });
+}
+
+export function useUpdateBookmark() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ bookmarkId, data }: { bookmarkId: string; data: UpdateBookmarkInput }) =>
+      updateBookmark(user!.id, bookmarkId, data),
+    onMutate: async ({ bookmarkId, data }) => {
+      console.log("🔄 useUpdateBookmark: Starting optimistic update");
+
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: bookmarkKeys.lists() });
+
+      // Snapshot the previous value
+      const previousBookmarks = queryClient.getQueryData(bookmarkKeys.list({}));
+
+      // Optimistically update the cache
+      queryClient.setQueryData(
+        bookmarkKeys.list({}),
+        (old: Bookmark[] | undefined) => {
+          if (!old) return [];
+          return old.map(bookmark =>
+            bookmark.id === bookmarkId
+              ? { ...bookmark, ...data, updated_at: new Date().toISOString() }
+              : bookmark
+          );
+        }
+      );
+
+      console.log("✅ useUpdateBookmark: Optimistic update applied");
+
+      return { previousBookmarks };
+    },
+    onError: (err, variables, context) => {
+      console.error("🔴 useUpdateBookmark: Error, rolling back:", err);
+      // Rollback on error
+      if (context?.previousBookmarks) {
+        queryClient.setQueryData(bookmarkKeys.list({}), context.previousBookmarks);
+      }
+    },
+    onSuccess: (data, variables) => {
+      console.log("✅ useUpdateBookmark: Success, updating with real data:", data.id);
+      // Update cache with real data
+      queryClient.setQueryData(
+        bookmarkKeys.list({}),
+        (old: Bookmark[] | undefined) => {
+          if (!old) return [data];
+          return old.map(bookmark =>
+            bookmark.id === variables.bookmarkId ? data : bookmark
+          );
+        }
+      );
+    },
+    onSettled: () => {
+      console.log("🔄 useUpdateBookmark: Settled, invalidating queries");
+      // Always refetch after mutation settles
+      queryClient.invalidateQueries({ queryKey: bookmarkKeys.lists() });
+    },
+  });
+}
+
+export function useDeleteBookmark() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (bookmarkId: string) => deleteBookmark(user!.id, bookmarkId),
+    onMutate: async (bookmarkId) => {
+      console.log("🔄 useDeleteBookmark: Starting optimistic update");
+
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: bookmarkKeys.lists() });
+
+      // Snapshot the previous value
+      const previousBookmarks = queryClient.getQueryData(bookmarkKeys.list({}));
+
+      // Optimistically remove from cache
+      queryClient.setQueryData(
+        bookmarkKeys.list({}),
+        (old: Bookmark[] | undefined) => {
+          if (!old) return [];
+          return old.filter(bookmark => bookmark.id !== bookmarkId);
+        }
+      );
+
+      console.log("✅ useDeleteBookmark: Optimistic update applied");
+
+      return { previousBookmarks };
+    },
+    onError: (err, bookmarkId, context) => {
+      console.error("🔴 useDeleteBookmark: Error, rolling back:", err);
+      // Rollback on error
+      if (context?.previousBookmarks) {
+        queryClient.setQueryData(bookmarkKeys.list({}), context.previousBookmarks);
+      }
+    },
+    onSuccess: (data, bookmarkId) => {
+      console.log("✅ useDeleteBookmark: Success, bookmark deleted:", bookmarkId);
+    },
+    onSettled: () => {
+      console.log("🔄 useDeleteBookmark: Settled, invalidating queries");
       // Always refetch after mutation settles
       queryClient.invalidateQueries({ queryKey: bookmarkKeys.lists() });
     },

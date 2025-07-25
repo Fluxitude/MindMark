@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "@mindmark/ui/card";
 import { Button } from "@mindmark/ui/button";
 import { Input } from "@mindmark/ui/input";
 import { useCollections } from "@mindmark/supabase";
-import { Plus, X, Folder, Tag, Palette } from "lucide-react";
+import { Plus, X, Folder, Tag, Palette, Bookmark, Star, Heart, Brain, Book, Wrench, Lightbulb } from "lucide-react";
 
 interface CreateCollectionDialogProps {
   isOpen: boolean;
@@ -27,14 +27,14 @@ const COLLECTION_COLORS = [
 ];
 
 const COLLECTION_ICONS = [
-  { name: "folder", icon: "📁", label: "Folder" },
-  { name: "bookmark", icon: "🔖", label: "Bookmark" },
-  { name: "star", icon: "⭐", label: "Star" },
-  { name: "heart", icon: "❤️", label: "Heart" },
-  { name: "brain", icon: "🧠", label: "Brain" },
-  { name: "book", icon: "📚", label: "Book" },
-  { name: "tool", icon: "🔧", label: "Tool" },
-  { name: "lightbulb", icon: "💡", label: "Idea" },
+  { name: "folder", icon: Folder, label: "Folder" },
+  { name: "bookmark", icon: Bookmark, label: "Bookmark" },
+  { name: "star", icon: Star, label: "Star" },
+  { name: "heart", icon: Heart, label: "Heart" },
+  { name: "brain", icon: Brain, label: "Brain" },
+  { name: "book", icon: Book, label: "Book" },
+  { name: "tool", icon: Wrench, label: "Tool" },
+  { name: "lightbulb", icon: Lightbulb, label: "Idea" },
 ];
 
 export function CreateCollectionDialog({ isOpen, onClose, onSuccess }: CreateCollectionDialogProps) {
@@ -211,7 +211,10 @@ export function CreateCollectionDialog({ isOpen, onClose, onSuccess }: CreateCol
                     disabled={isLoading}
                     title={iconData.label}
                   >
-                    <span className="text-lg">{iconData.icon}</span>
+                    {(() => {
+                      const IconComponent = iconData.icon;
+                      return <IconComponent className="w-5 h-5" />;
+                    })()}
                   </button>
                 ))}
               </div>

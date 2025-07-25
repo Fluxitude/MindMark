@@ -121,7 +121,21 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
         xl: "calc(var(--radius) + 4px)",
         DEFAULT: "var(--radius)",
+        // Cult UI inspired enhanced border radius
+        "2xl": "calc(var(--radius) + 8px)",
+        "3xl": "calc(var(--radius) + 12px)",
+        "4xl": "24px", // Cult UI signature 24px radius
       },
+      // Cult UI inspired gradient backgrounds
+      backgroundImage: {
+        "gradient-top-right": "var(--gradient-top-right)",
+        "gradient-top-right-light": "var(--gradient-top-right-light)",
+        "gradient-top-right-light-header": "var(--gradient-top-right-light-header)",
+        // Additional gradients for variety
+        "gradient-neomorphic": "linear-gradient(145deg, var(--background) 0%, var(--muted) 100%)",
+        "gradient-card": "linear-gradient(145deg, var(--card) 0%, var(--muted) 100%)",
+      },
+
       spacing: {
         // Enhanced spacing scale for better consistency
         "spacing-1": "0.25rem",   // 4px
@@ -180,6 +194,11 @@ const config = {
         inner: "var(--shadow-inner)",
         focus: "var(--shadow-focus)",
         none: "none",
+        // Cult UI neomorphic shadow system for depth and tactile feel
+        "neomorphic": "var(--shadow-neomorphic-light)",
+        "neomorphic-hover": "var(--shadow-neomorphic-hover)",
+        "neomorphic-sm": "0px 1px 1px 0px rgba(0,0,0,0.03), 0px 1px 1px 0px rgba(255,252,240,0.3) inset",
+        "neomorphic-lg": "0px 2px 4px 0px rgba(0,0,0,0.08), 0px 2px 4px 0px rgba(255,252,240,0.6) inset, 0px 0px 0px 1px hsla(0,0%,100%,0.15) inset",
       },
       keyframes: {
         "accordion-down": {

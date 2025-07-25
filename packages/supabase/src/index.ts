@@ -2,6 +2,7 @@
 // Database operations, auth, and real-time features
 
 export * from "./client";
+export * from "./server-client";
 export * from "./auth";
 export * from "./queries";
 
@@ -10,12 +11,17 @@ export * from "./providers/auth-provider";
 export * from "./providers/query-provider";
 
 // Export optimized React Query hooks (primary)
-export { useBookmarks, useCreateBookmark, bookmarkKeys } from "./queries/bookmarks";
+export { useBookmarks, useCreateBookmark, useUpdateBookmark, useDeleteBookmark, bookmarkKeys } from "./queries/bookmarks";
 
 // Export legacy React hooks with different names (for backward compatibility)
 export { useBookmarks as useLegacyBookmarks } from "./hooks/useBookmarks";
 export * from "./hooks/useBookmark";
 export * from "./hooks/useCollections";
+export * from "./hooks/useInstantSearch";
+
+// Export Typesense search hooks
+export * from "./hooks/useTypesenseSearch";
+export * from "./hooks/useTypesenseSync";
 
 // Export utilities
 export * from "./utils/url-validation";

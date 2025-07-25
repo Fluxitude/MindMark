@@ -4,6 +4,7 @@ import { AuthProvider, QueryProvider } from "@mindmark/supabase";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Analytics } from "@vercel/analytics/react";
 import { MonitoringProvider } from "@/components/monitoring-provider";
+import { SearchProvider } from "../providers/search-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,7 +25,15 @@ export default function RootLayout({
           <NuqsAdapter>
             <QueryProvider>
               <AuthProvider>
-                {children}
+                <SearchProvider>
+                  {/* Temporarily disabled TwentyFirstToolbar due to SSR issues */}
+                  {/* <TwentyFirstToolbar
+                    config={{
+                      plugins: [ReactPlugin],
+                    }}
+                  /> */}
+                  {children}
+                </SearchProvider>
               </AuthProvider>
             </QueryProvider>
           </NuqsAdapter>

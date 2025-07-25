@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "@mindmark/ui/card";
 import { Button } from "@mindmark/ui/button";
 import { useCollections } from "@mindmark/supabase";
-import { X, Folder, Check, Plus } from "lucide-react";
+import { X, Folder, Check, Plus, Bookmark, Star, Heart, Brain, Book, Wrench, Lightbulb } from "lucide-react";
 
 interface AssignCollectionDialogProps {
   bookmark: {
@@ -159,20 +159,20 @@ export function AssignCollectionDialog({ bookmark, isOpen, onClose, onSuccess }:
                         className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0"
                         style={{ backgroundColor: collection.color }}
                       >
-                        {collection.icon === "folder" ? (
-                          <Folder className="w-4 h-4" />
-                        ) : (
-                          <span className="text-sm">
-                            {collection.icon === "bookmark" && "🔖"}
-                            {collection.icon === "star" && "⭐"}
-                            {collection.icon === "heart" && "❤️"}
-                            {collection.icon === "brain" && "🧠"}
-                            {collection.icon === "book" && "📚"}
-                            {collection.icon === "tool" && "🔧"}
-                            {collection.icon === "lightbulb" && "💡"}
-                            {!["folder", "bookmark", "star", "heart", "brain", "book", "tool", "lightbulb"].includes(collection.icon) && "📁"}
-                          </span>
-                        )}
+                        {(() => {
+                          const iconMap: Record<string, any> = {
+                            folder: Folder,
+                            bookmark: Bookmark,
+                            star: Star,
+                            heart: Heart,
+                            brain: Brain,
+                            book: Book,
+                            tool: Wrench,
+                            lightbulb: Lightbulb,
+                          };
+                          const IconComponent = iconMap[collection.icon] || Folder;
+                          return <IconComponent className="w-4 h-4" />;
+                        })()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-foreground truncate">

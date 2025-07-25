@@ -23,8 +23,8 @@
     "@biomejs/biome": "1.8.3"
   },
   "exports": {
-    "./semantic": "./src/services/semantic.ts",
-    "./embeddings": "./src/services/embeddings.ts",
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
     "./indexing": "./src/services/indexing.ts",
     "./query": "./src/services/query.ts",
     "./types": "./src/types/index.ts"

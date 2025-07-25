@@ -5,6 +5,7 @@
 
 import { Card } from "@mindmark/ui/card";
 import { useCollections } from "@mindmark/supabase";
+import { Clock, Star, FileText, Video, Wrench, Book, Code, Palette, Folder } from "lucide-react";
 
 interface SmartCollectionsProps {
   onSelectCollection?: (collectionId: string) => void;
@@ -13,21 +14,33 @@ interface SmartCollectionsProps {
 export function SmartCollections({ onSelectCollection }: SmartCollectionsProps) {
   const { collections, loading, error } = useCollections({ isArchived: false });
 
-  // Helper function to get icon for collection
+  // Helper function to get icon component for collection
   const getCollectionIcon = (icon: string, name: string) => {
-    if (icon && icon !== "folder") return icon;
+    // Map icon names to Lucide React components
+    const iconMap: Record<string, any> = {
+      folder: Folder,
+      bookmark: Star, // Using Star as bookmark alternative
+      star: Star,
+      heart: Star, // Using Star as heart alternative
+      brain: Star, // Using Star as brain alternative
+      book: Book,
+      tool: Wrench,
+      lightbulb: Star, // Using Star as lightbulb alternative
+    };
+
+    if (icon && iconMap[icon]) return iconMap[icon];
 
     // Auto-generate icons based on collection name
     const nameUpper = name.toUpperCase();
-    if (nameUpper.includes("RECENT") || nameUpper.includes("LATEST")) return "⏰";
-    if (nameUpper.includes("FAVORITE") || nameUpper.includes("STAR")) return "⭐";
-    if (nameUpper.includes("ARTICLE") || nameUpper.includes("BLOG")) return "📄";
-    if (nameUpper.includes("VIDEO") || nameUpper.includes("YOUTUBE")) return "🎥";
-    if (nameUpper.includes("TOOL") || nameUpper.includes("APP")) return "🔧";
-    if (nameUpper.includes("DOC") || nameUpper.includes("GUIDE")) return "📚";
-    if (nameUpper.includes("CODE") || nameUpper.includes("GITHUB")) return "💻";
-    if (nameUpper.includes("DESIGN") || nameUpper.includes("UI")) return "🎨";
-    return "📁";
+    if (nameUpper.includes("RECENT") || nameUpper.includes("LATEST")) return Clock;
+    if (nameUpper.includes("FAVORITE") || nameUpper.includes("STAR")) return Star;
+    if (nameUpper.includes("ARTICLE") || nameUpper.includes("BLOG")) return FileText;
+    if (nameUpper.includes("VIDEO") || nameUpper.includes("YOUTUBE")) return Video;
+    if (nameUpper.includes("TOOL") || nameUpper.includes("APP")) return Wrench;
+    if (nameUpper.includes("DOC") || nameUpper.includes("GUIDE")) return Book;
+    if (nameUpper.includes("CODE") || nameUpper.includes("GITHUB")) return Code;
+    if (nameUpper.includes("DESIGN") || nameUpper.includes("UI")) return Palette;
+    return Folder;
   };
 
   if (loading) {
@@ -82,8 +95,11 @@ export function SmartCollections({ onSelectCollection }: SmartCollectionsProps) 
         >
           <div className="p-4 text-center space-y-3">
             {/* Icon */}
-            <div className="text-2xl">
-              {getCollectionIcon(collection.icon, collection.name)}
+            <div className="flex justify-center">
+              {(() => {
+                const IconComponent = getCollectionIcon(collection.icon, collection.name);
+                return <IconComponent className="w-8 h-8 text-foreground" />;
+              })()}
             </div>
 
             {/* Name and Count */}

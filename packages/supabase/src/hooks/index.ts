@@ -3,3 +3,4 @@
 
 export * from "./useBookmarks";
 export * from "./useCollections";
+export * from "./useInstantSearch";

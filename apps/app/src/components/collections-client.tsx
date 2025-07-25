@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@mindmark/ui/card";
 import { Button } from "@mindmark/ui/button";
-import { Plus, Folder, BookOpen } from "lucide-react";
+import { Plus, Folder, BookOpen, Bookmark, Star, Heart, Brain, Book, Wrench, Lightbulb } from "lucide-react";
 
 export function CollectionsClient() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -17,7 +17,7 @@ export function CollectionsClient() {
   const collectionsError = null;
 
   return (
-    <main className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -90,20 +90,20 @@ export function CollectionsClient() {
                       className="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium"
                       style={{ backgroundColor: collection.color }}
                     >
-                      {collection.icon === "folder" ? (
-                        <Folder className="w-5 h-5" />
-                      ) : (
-                        <span className="text-lg">
-                          {collection.icon === "bookmark" && "🔖"}
-                          {collection.icon === "star" && "⭐"}
-                          {collection.icon === "heart" && "❤️"}
-                          {collection.icon === "brain" && "🧠"}
-                          {collection.icon === "book" && "📚"}
-                          {collection.icon === "tool" && "🔧"}
-                          {collection.icon === "lightbulb" && "💡"}
-                          {!["folder", "bookmark", "star", "heart", "brain", "book", "tool", "lightbulb"].includes(collection.icon) && "📁"}
-                        </span>
-                      )}
+                      {(() => {
+                        const iconMap: Record<string, any> = {
+                          folder: Folder,
+                          bookmark: Bookmark,
+                          star: Star,
+                          heart: Heart,
+                          brain: Brain,
+                          book: Book,
+                          tool: Wrench,
+                          lightbulb: Lightbulb,
+                        };
+                        const IconComponent = iconMap[collection.icon] || Folder;
+                        return <IconComponent className="w-5 h-5" />;
+                      })()}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-foreground truncate">
@@ -152,6 +152,6 @@ export function CollectionsClient() {
           </Card>
         </div>
       )}
-    </main>
+    </div>
   );
 }

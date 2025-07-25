@@ -9,7 +9,7 @@ import { Settings, LogOut, User } from "lucide-react";
 import { useAuth } from "@mindmark/supabase";
 
 interface NavigationHeaderProps {
-  currentPage?: "dashboard" | "collections" | "digest";
+  currentPage?: "dashboard" | "collections" | "digest" | "search";
 }
 
 export function NavigationHeader({ currentPage = "dashboard" }: NavigationHeaderProps) {

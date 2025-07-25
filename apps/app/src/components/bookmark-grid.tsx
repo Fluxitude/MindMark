@@ -5,6 +5,7 @@
 
 import { useLegacyBookmarks as useBookmarks } from "@mindmark/supabase";
 import { BookmarkCard } from "./bookmark-card";
+import { BookOpen, Lightbulb, Target } from "lucide-react";
 
 interface BookmarkGridProps {
   searchQuery?: string;
@@ -86,24 +87,57 @@ export function BookmarkGrid({
 
   if (bookmarks.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="text-center py-12 max-w-md mx-auto">
+        {/* Visual Icon - Larger and more friendly */}
+        <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-foreground mb-2">No bookmarks found</h3>
-        <p className="text-muted-foreground mb-4">
-          {searchQuery 
-            ? `No bookmarks found for "${searchQuery}"`
+
+        {/* Clear, Encouraging Heading */}
+        <h3 className="text-xl font-semibold text-foreground mb-3">
+          {searchQuery
+            ? "No matches found"
             : collectionId
-            ? "This collection is empty"
-            : "Start saving your favorite links to see them here"
+            ? "Collection is empty"
+            : "Ready to start your knowledge base?"
+          }
+        </h3>
+
+        {/* Helpful, Non-overwhelming Description */}
+        <p className="text-muted-foreground mb-6 leading-relaxed">
+          {searchQuery
+            ? `Try different keywords or check your spelling. Your bookmarks are waiting to be discovered!`
+            : collectionId
+            ? "Add bookmarks to this collection to organize your knowledge by topic."
+            : "Save articles, videos, and tools you want to remember. MindMark will help you find them later with AI-powered search."
           }
         </p>
+
+        {/* Clear Action Steps */}
         {!searchQuery && !collectionId && (
+          <div className="space-y-4">
+            <button className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              Add Your First Bookmark
+            </button>
+            <div className="text-sm text-muted-foreground space-y-2">
+              <div className="flex items-center gap-2">
+                <Lightbulb className="w-4 h-4 text-yellow-500" />
+                <span><strong>Quick tip:</strong> Use Ctrl+K to search anytime</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Target className="w-4 h-4 text-blue-500" />
+                <span><strong>Pro tip:</strong> Bookmarks are automatically organized by AI</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {searchQuery && (
           <button className="text-primary hover:text-primary/80 font-medium">
-            Add your first bookmark
+            Clear search and see all bookmarks
           </button>
         )}
       </div>

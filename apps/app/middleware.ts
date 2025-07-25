@@ -103,9 +103,8 @@ export async function middleware(request: NextRequest) {
     response.headers.set(key, value)
   })
 
-  // Auth handling for protected routes
-  if (pathname.startsWith('/dashboard') || 
-      (pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/'))) {
+  // Auth handling for protected routes (only dashboard, let API routes handle their own auth)
+  if (pathname.startsWith('/dashboard')) {
     
     try {
       const supabase = createServerClient(
@@ -123,6 +122,11 @@ export async function middleware(request: NextRequest) {
               })
             },
           },
+          auth: {
+            autoRefreshToken: false,
+            persistSession: false,
+            detectSessionInUrl: false,
+          },
         }
       )
 
@@ -135,18 +139,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(loginUrl)
       }
       
-      // Return 401 for API routes if not authenticated
-      if (!user && pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/')) {
-        return new Response(JSON.stringify({ 
-          error: 'Unauthorized',
-          message: 'Authentication required'
-        }), { 
-          status: 401,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-      }
+      // API routes will handle their own authentication
     } catch (error) {
       console.error('Middleware auth error:', error)
       
@@ -155,18 +148,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/auth/login', request.url))
       }
       
-      // Return 500 for API routes on auth error
-      if (pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/')) {
-        return new Response(JSON.stringify({ 
-          error: 'Internal Server Error',
-          message: 'Authentication service unavailable'
-        }), { 
-          status: 500,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-      }
+      // API routes will handle their own authentication errors
     }
   }
 

@@ -217,28 +217,31 @@ export function UserProfile({
 
   // Compact variant (default)
   return (
-    <div className={cn("flex items-center gap-3", className)}>
+    <div className={cn("flex items-center gap-2 min-w-0", className)}>
       <UserAvatar
         src={user.avatar_url}
         name={user.name}
         email={user.email}
         size="sm"
         status="online"
+        className="shrink-0"
       />
-      <div className="flex flex-col min-w-0">
-        <span className="text-sm font-medium truncate">{displayName}</span>
-        <span className="text-xs text-muted-foreground truncate">
+      <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
+        <span className="text-sm font-medium truncate max-w-full">{displayName}</span>
+        <span className="text-xs text-muted-foreground truncate max-w-full">
           {user.email}
         </span>
       </div>
-      {showThemeToggle && (
-        <ThemeToggle size="sm" />
-      )}
-      {onSignOut && (
-        <Button variant="ghost" size="icon" onClick={onSignOut}>
-          <LogOut className="h-4 w-4" />
-        </Button>
-      )}
+      <div className="flex items-center gap-1 shrink-0">
+        {showThemeToggle && (
+          <ThemeToggle size="sm" />
+        )}
+        {onSignOut && (
+          <Button variant="ghost" size="icon" onClick={onSignOut} className="h-8 w-8">
+            <LogOut className="h-3 w-3" />
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

@@ -252,40 +252,61 @@
     --text-weight: 400;
   }
 
-  /* Dark Theme Overrides */
+  /* Enhanced Dark Theme for Better Contrast and Cognitive Accessibility */
   .dark {
-    --background: var(--base-950);
-    --foreground: var(--base-200);
-    --card: var(--base-950);
-    --card-foreground: var(--base-200);
-    --popover: var(--base-950);
-    --popover-foreground: var(--base-200);
-    --primary: var(--base-50);
-    --primary-foreground: var(--base-900);
-    --secondary: var(--base-800);
-    --secondary-foreground: var(--base-200);
-    --muted: var(--base-900);
-    --muted-foreground: var(--base-400);
-    --accent: var(--base-900);
-    --accent-foreground: var(--base-200);
-    --destructive: oklch(0.704 0.191 22.216);
-    --destructive-foreground: var(--color-white);
-    --border: var(--base-800);
-    --input: var(--base-700);
-    --ring: var(--base-200);
-    --chart-1: var(--base-50);
-    --chart-2: var(--base-400);
-    --chart-3: var(--base-200);
-    --chart-4: var(--base-600);
-    --chart-5: var(--base-700);
-    --sidebar: var(--base-900);
-    --sidebar-foreground: var(--base-200);
-    --sidebar-primary: var(--base-50);
-    --sidebar-primary-foreground: var(--base-900);
-    --sidebar-accent: var(--base-800);
-    --sidebar-accent-foreground: var(--base-200);
-    --sidebar-border: var(--base-800);
-    --sidebar-ring: var(--base-200);
+    /* True dark backgrounds for better contrast */
+    --background: oklch(0.08 0.004 285.83);
+    --foreground: oklch(0.95 0.013 286.84);
+
+    /* Enhanced card contrast */
+    --card: oklch(0.1 0.006 285.83);
+    --card-foreground: oklch(0.92 0.015 286.84);
+
+    /* Improved popover contrast */
+    --popover: oklch(0.09 0.005 285.83);
+    --popover-foreground: oklch(0.93 0.014 286.84);
+
+    /* Better primary colors for dark mode */
+    --primary: oklch(0.85 0.02 286.84);
+    --primary-foreground: oklch(0.12 0.008 285.83);
+
+    /* Enhanced secondary colors */
+    --secondary: oklch(0.15 0.008 285.83);
+    --secondary-foreground: oklch(0.88 0.018 286.84);
+
+    /* Improved muted colors for better readability */
+    --muted: oklch(0.12 0.007 285.83);
+    --muted-foreground: oklch(0.65 0.012 286.07);
+
+    /* Better accent colors */
+    --accent: oklch(0.14 0.008 285.83);
+    --accent-foreground: oklch(0.9 0.016 286.84);
+
+    /* Enhanced destructive colors */
+    --destructive: oklch(0.65 0.2 25);
+    --destructive-foreground: oklch(0.98 0.013 286.84);
+
+    /* Improved borders and inputs */
+    --border: oklch(0.2 0.008 285.83);
+    --input: oklch(0.16 0.008 285.83);
+    --ring: oklch(0.7 0.15 220);
+
+    /* Enhanced chart colors for dark mode */
+    --chart-1: oklch(0.85 0.02 286.84);
+    --chart-2: oklch(0.65 0.12 240);
+    --chart-3: oklch(0.75 0.15 140);
+    --chart-4: oklch(0.7 0.15 80);
+    --chart-5: oklch(0.6 0.18 20);
+
+    /* Enhanced sidebar for better contrast */
+    --sidebar: oklch(0.09 0.005 285.83);
+    --sidebar-foreground: oklch(0.9 0.016 286.84);
+    --sidebar-primary: oklch(0.82 0.02 286.84);
+    --sidebar-primary-foreground: oklch(0.12 0.008 285.83);
+    --sidebar-accent: oklch(0.13 0.007 285.83);
+    --sidebar-accent-foreground: oklch(0.85 0.018 286.84);
+    --sidebar-border: oklch(0.18 0.008 285.83);
+    --sidebar-ring: oklch(0.7 0.15 220);
 
     /* Cult UI dark mode gradients and shadows */
     --gradient-top-right: linear-gradient(229.7deg, #ffbb88 10.61%, #ff7cba 26.17%, #887bff 31.93%, #03c7f6 46.54%, #0F1014 54.36%);

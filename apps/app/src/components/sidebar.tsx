@@ -231,8 +231,9 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         {/* User Profile Section - Dynamic with UserProfile Component */}
         <div className={cn(
           "border-b border-white/60 dark:border-neutral-700/50",
-          "bg-gradient-to-b from-neutral-50/50 to-neutral-100/50 dark:from-neutral-900/50 dark:to-neutral-800/50",
-          collapsed ? "p-3" : "p-4"
+          "bg-gradient-to-b from-neutral-50/50 to-neutral-100/50 dark:from-neutral-900/30 dark:to-neutral-800/30",
+          "backdrop-blur-sm",
+          collapsed ? "p-3" : "p-3"
         )}>
           {collapsed ? (
             <div className="flex justify-center">

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@mindmark/ui/card";
 import { Button } from "@mindmark/ui/button";
 import { Input } from "@mindmark/ui/input";
+import { ThemeToggle } from "@mindmark/ui/theme-toggle";
 import { authService } from "@mindmark/supabase";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 
@@ -45,7 +46,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle variant="dropdown" />
+      </div>
+
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">

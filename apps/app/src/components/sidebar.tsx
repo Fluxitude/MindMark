@@ -11,6 +11,8 @@ import { Button } from "@mindmark/ui/button";
 import { Badge } from "@mindmark/ui/badge";
 import { cn } from "@mindmark/ui/cn";
 import { UserProfile } from "@mindmark/ui/user-profile";
+import { UserAvatar } from "@mindmark/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@mindmark/ui/dropdown-menu";
 import { useCollections } from "@mindmark/supabase";
 import { useAuth } from "@mindmark/supabase";
 import { CreateCollectionDialog } from "./collections/create-collection-dialog";
@@ -29,6 +31,11 @@ import {
   Tag,
   Star,
   Heart,
+  Edit,
+  Bell,
+  Settings,
+  LogOut,
+  Palette,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -237,19 +244,74 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         )}>
           {collapsed ? (
             <div className="flex justify-center">
-              <UserProfile
-                user={user ? {
-                  id: user.id,
-                  email: user.email || undefined,
-                  name: user.user_metadata?.full_name || user.user_metadata?.name || undefined,
-                  avatar_url: user.user_metadata?.avatar_url || undefined,
-                  created_at: user.created_at,
-                } : null}
-                variant="dropdown"
-                onSignOut={signOut}
-                showThemeToggle={false}
-                className="w-8 h-8"
-              />
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-full p-0 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                      title={`${user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User'} - ${user.email}`}
+                    >
+                      <UserAvatar
+                        src={user.user_metadata?.avatar_url}
+                        name={user.user_metadata?.full_name || user.user_metadata?.name}
+                        email={user.email}
+                        size="sm"
+                        status="online"
+                      />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="center" side="right" className="w-64">
+                    <div className="flex items-center gap-3 p-3">
+                      <UserAvatar
+                        src={user.user_metadata?.avatar_url}
+                        name={user.user_metadata?.full_name || user.user_metadata?.name}
+                        email={user.email}
+                        size="md"
+                        status="online"
+                      />
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <span className="font-medium truncate">
+                          {user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User'}
+                        </span>
+                        <span className="text-sm text-muted-foreground truncate">
+                          {user.email}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          Joined {new Date(user.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Edit className="mr-2 h-4 w-4" />
+                      Edit Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Settings className="mr-2 h-4 w-4" />
+                      Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Bell className="mr-2 h-4 w-4" />
+                      Notifications
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Palette className="mr-2 h-4 w-4" />
+                      Appearance
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={signOut} className="text-red-600 dark:text-red-400">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button variant="outline" size="sm" className="text-xs">
+                  Sign In
+                </Button>
+              )}
             </div>
           ) : (
             <UserProfile

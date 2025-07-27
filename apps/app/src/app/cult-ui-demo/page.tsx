@@ -133,7 +133,7 @@ function DemoContent() {
               <Checkbox 
                 id="terms" 
                 checked={checkboxValue}
-                onCheckedChange={setCheckboxValue}
+                onCheckedChange={(checked) => setCheckboxValue(checked === true)}
               />
               <Label htmlFor="terms">Accept terms and conditions</Label>
             </div>

@@ -15,6 +15,7 @@ import { Badge } from "@mindmark/ui/badge";
 import { Switch } from "@mindmark/ui/switch";
 import { Button } from "@mindmark/ui/button";
 import { useBookmarks } from "@mindmark/supabase";
+import { toUIBookmark } from "@mindmark/types";
 import { ChevronRight, Brain, BookOpen, Wrench, Plus, ExternalLink, Edit, Trash2, FolderPlus } from "lucide-react";
 
 export function DashboardClient() {
@@ -28,13 +29,16 @@ export function DashboardClient() {
   const [view, setView] = useQueryState('view', { defaultValue: 'grid' });
 
   const {
-    data: bookmarks = [],
+    data: rawBookmarks = [],
     isLoading: bookmarksLoading,
     error: bookmarksError
   } = useBookmarks({
     limit: 10,
     search: search || undefined
   });
+
+  // Transform bookmarks to UI format with computed properties
+  const bookmarks = rawBookmarks.map(toUIBookmark);
 
   // TODO: Implement useCollections with React Query
   const collections: any[] = [];
@@ -260,7 +264,7 @@ export function DashboardClient() {
                           {tag}
                         </Badge>
                       ))}
-                      {bookmark.tags?.length > 2 && (
+                      {bookmark.tags && bookmark.tags.length > 2 && (
                         <Badge variant="outline" className="text-xs">
                           +{bookmark.tags.length - 2}
                         </Badge>

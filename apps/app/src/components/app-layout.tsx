@@ -8,13 +8,13 @@ import { Sidebar } from "./sidebar";
 
 interface AppLayoutProps {
   children: React.ReactNode;
-  currentPage?: "dashboard" | "collections" | "digest" | "search";
+  currentPage?: "home" | "bookmarks" | "collections" | "digest" | "search";
   showSidebar?: boolean;
 }
 
 export function AppLayout({
   children,
-  currentPage = "dashboard",
+  currentPage = "home",
   showSidebar = true
 }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

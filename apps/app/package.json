@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@mindmark/supabase": "workspace:*",
+    "@mindmark/types": "workspace:*",
     "@mindmark/ui": "workspace:*",
     "@vercel/analytics": "1.5.0",
     "autoprefixer": "10.4.21",
@@ -38,6 +39,9 @@
     "@playwright/test": "1.54.1",
     "@types/node": "^22",
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "critters": "0.0.25",
+    "ts-loader": "9.5.2",
+    "ttypescript": "1.5.15"
   }
 }

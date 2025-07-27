@@ -20,20 +20,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createSupabaseClient();
 
   useEffect(() => {
-    console.log("🔄 AuthProvider: Initializing session...");
-    
-    // Get initial session
+    if (process.env.NODE_ENV === 'development') {
+      console.log("🔄 AuthProvider: Initializing session...");
+    }
+
+    // Get initial session - NON-BLOCKING
     const getInitialSession = async () => {
       try {
+        // Use cached session first for faster loading
+        const cachedSession = localStorage.getItem('supabase.auth.token');
+        if (cachedSession) {
+          setLoading(false); // Allow app to render while verifying
+        }
+
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
-          console.error("🔴 AuthProvider: Session error:", error);
+          if (process.env.NODE_ENV === 'development') {
+            console.error("🔴 AuthProvider: Session error:", error);
+          }
         } else {
-          console.log("✅ AuthProvider: Initial session loaded:", session?.user?.id || "No user");
+          if (process.env.NODE_ENV === 'development') {
+            console.log("✅ AuthProvider: Initial session loaded:", session?.user?.id || "No user");
+          }
           setSession(session);
         }
       } catch (error) {
-        console.error("🔴 AuthProvider: Failed to get session:", error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error("🔴 AuthProvider: Failed to get session:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -41,10 +55,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     getInitialSession();
 
-    // Listen for auth changes
+    // Listen for auth changes - OPTIMIZED
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log("🔄 AuthProvider: Auth state changed:", event, session?.user?.id || "No user");
+        if (process.env.NODE_ENV === 'development') {
+          console.log("🔄 AuthProvider: Auth state changed:", event, session?.user?.id || "No user");
+        }
         setSession(session);
         setLoading(false);
       }

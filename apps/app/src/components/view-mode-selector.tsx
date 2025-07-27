@@ -13,13 +13,14 @@ import {
   TooltipTrigger,
 } from "@mindmark/ui/tooltip";
 import {
-  Grid3X3,
-  List,
   LayoutGrid,
-  Rows3,
+  List,
+  Table,
+  Columns,
+  Images,
 } from "lucide-react";
 
-export type ViewMode = "grid" | "list" | "compact" | "masonry";
+export type ViewMode = "grid" | "list" | "table" | "kanban" | "gallery";
 
 interface ViewModeSelectorProps {
   currentMode: ViewMode;
@@ -32,25 +33,31 @@ const viewModes = [
     mode: "grid" as ViewMode,
     icon: LayoutGrid,
     label: "Grid View",
-    description: "Large cards with full details",
-  },
-  {
-    mode: "compact" as ViewMode,
-    icon: Grid3X3,
-    label: "Compact Grid",
-    description: "Smaller cards, more per row",
+    description: "Card layout with full details",
   },
   {
     mode: "list" as ViewMode,
     icon: List,
     label: "List View",
-    description: "Horizontal layout, maximum density",
+    description: "Compact horizontal layout",
   },
   {
-    mode: "masonry" as ViewMode,
-    icon: Rows3,
-    label: "Masonry",
-    description: "Dynamic heights based on content",
+    mode: "table" as ViewMode,
+    icon: Table,
+    label: "Table View",
+    description: "Spreadsheet-style with metadata",
+  },
+  {
+    mode: "kanban" as ViewMode,
+    icon: Columns,
+    label: "Kanban View",
+    description: "Organize by collections/status",
+  },
+  {
+    mode: "gallery" as ViewMode,
+    icon: Images,
+    label: "Gallery View",
+    description: "Large thumbnails for visual browsing",
   },
 ];
 

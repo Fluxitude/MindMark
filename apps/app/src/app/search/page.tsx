@@ -48,9 +48,6 @@ function SearchPageContent() {
             <div className="space-y-4">
               <SearchBar
                 placeholder="Search your bookmarks..."
-                onSearch={handleSearch}
-                onResultClick={handleResultClick}
-                showResults={false}
               />
 
               {/* Search Info */}

@@ -4,16 +4,25 @@
 "use client";
 
 import { BookmarkCard } from "./bookmark-card";
+import { ExpandableBookmarkCard } from "./expandable-bookmark-card";
 import { BookmarkCardSkeleton } from "./bookmark-card-skeleton";
 import { ViewMode } from "./view-mode-selector";
+import {
+  BookmarkTableView,
+  BookmarkGalleryView,
+  BookmarkKanbanView
+} from "@mindmark/ui";
 import { cn } from "@mindmark/ui/cn";
 import { BookOpen, Lightbulb, Target, ExternalLink } from "lucide-react";
 import type { Bookmark } from "@mindmark/supabase";
+import { toUIBookmarks } from "@mindmark/types";
 
 interface BookmarkGridEnhancedProps {
   bookmarks: Bookmark[];
   viewMode: ViewMode;
   loading?: boolean;
+  useExpandableCards?: boolean;
+  hoverToExpand?: boolean;
   onToggleFavorite?: (id: string, isFavorite: boolean) => void;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
@@ -25,6 +34,8 @@ export function BookmarkGridEnhanced({
   bookmarks,
   viewMode,
   loading = false,
+  useExpandableCards = true,
+  hoverToExpand = false,
   onToggleFavorite,
   onEdit,
   onDelete,
@@ -34,9 +45,9 @@ export function BookmarkGridEnhanced({
   if (loading) {
     return (
       <div className={cn(getGridClasses(viewMode), className)}>
-        <BookmarkCardSkeleton 
-          compact={viewMode === "compact" || viewMode === "list"} 
-          count={getSkeletonCount(viewMode)} 
+        <BookmarkCardSkeleton
+          compact={viewMode === "list"}
+          count={getSkeletonCount(viewMode)}
         />
       </div>
     );
@@ -81,20 +92,71 @@ export function BookmarkGridEnhanced({
     );
   }
 
+  // Handle different view modes
+  if (viewMode === "table") {
+    return (
+      <BookmarkTableView
+        bookmarks={toUIBookmarks(bookmarks)}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onToggleFavorite={onToggleFavorite}
+        onAssignToCollection={onAssignToCollection}
+        showScreenshots={true}
+        className={className}
+      />
+    );
+  }
+
+  if (viewMode === "gallery") {
+    return (
+      <BookmarkGalleryView
+        bookmarks={toUIBookmarks(bookmarks)}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onToggleFavorite={onToggleFavorite}
+        onAssignToCollection={onAssignToCollection}
+        columns={3}
+        showMetadata={true}
+        className={className}
+      />
+    );
+  }
+
+  if (viewMode === "kanban") {
+    return (
+      <BookmarkKanbanView
+        bookmarks={toUIBookmarks(bookmarks)}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onToggleFavorite={onToggleFavorite}
+        onAssignToCollection={onAssignToCollection}
+        groupBy="collections"
+        className={className}
+      />
+    );
+  }
+
+  // Default grid and list views
   return (
     <div className={cn(getGridClasses(viewMode), className)}>
-      {bookmarks.map((bookmark) => (
-        <BookmarkCard
-          key={bookmark.id}
-          bookmark={bookmark}
-          compact={viewMode === "compact" || viewMode === "list"}
-          showAISummary={viewMode !== "list"}
-          onToggleFavorite={onToggleFavorite}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onAssignToCollection={onAssignToCollection}
-        />
-      ))}
+      {bookmarks.map((bookmark) => {
+        // Use ExpandableBookmarkCard by default, fallback to regular BookmarkCard
+        const CardComponent = useExpandableCards ? ExpandableBookmarkCard : BookmarkCard;
+
+        return (
+          <CardComponent
+            key={bookmark.id}
+            bookmark={bookmark}
+            compact={viewMode === "list"}
+            showAISummary={viewMode !== "list"}
+            hoverToExpand={hoverToExpand}
+            onToggleFavorite={onToggleFavorite}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onAssignToCollection={onAssignToCollection}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -104,12 +166,8 @@ function getGridClasses(viewMode: ViewMode): string {
   switch (viewMode) {
     case "grid":
       return "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6";
-    case "compact":
-      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4";
     case "list":
       return "space-y-3";
-    case "masonry":
-      return "columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6";
     default:
       return "grid grid-cols-1 lg:grid-cols-2 gap-6";
   }
@@ -120,11 +178,13 @@ function getSkeletonCount(viewMode: ViewMode): number {
   switch (viewMode) {
     case "grid":
       return 6;
-    case "compact":
-      return 10;
     case "list":
       return 8;
-    case "masonry":
+    case "table":
+      return 10;
+    case "gallery":
+      return 6;
+    case "kanban":
       return 8;
     default:
       return 6;

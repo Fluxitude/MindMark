@@ -32,7 +32,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-interface LoginFormProps extends React.ComponentProps<"div"> {
+interface LoginFormProps extends Omit<React.ComponentProps<"div">, "onSubmit"> {
   onSubmit?: (data: LoginFormData) => Promise<void>;
   onGoogleSignIn?: () => Promise<void>;
   onSignUpClick?: () => void;

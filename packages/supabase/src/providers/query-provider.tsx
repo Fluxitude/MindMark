@@ -56,11 +56,14 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
+      {/* Lazy load devtools only when needed */}
       {process.env.NODE_ENV === "development" && (
-        <ReactQueryDevtools 
-          initialIsOpen={false} 
-          buttonPosition="bottom-left"
-        />
+        <React.Suspense fallback={null}>
+          <ReactQueryDevtools
+            initialIsOpen={false}
+            buttonPosition="bottom-left"
+          />
+        </React.Suspense>
       )}
     </QueryClientProvider>
   );

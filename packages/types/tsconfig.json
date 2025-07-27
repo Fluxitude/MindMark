@@ -1,0 +1,14 @@
+{
+  "extends": "@mindmark/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "ts-node": {
+    "compiler": "ttypescript"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

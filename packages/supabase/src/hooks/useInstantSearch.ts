@@ -181,10 +181,12 @@ export function useInstantSearch(
       // Limit cache size to prevent memory leaks
       if (cacheRef.current.size > 50) {
         const firstKey = cacheRef.current.keys().next().value;
-        cacheRef.current.delete(firstKey);
+        if (firstKey) {
+          cacheRef.current.delete(firstKey);
+        }
       }
     } catch (err) {
-      if (err.name === "AbortError") {
+      if ((err as Error).name === "AbortError") {
         // Request was cancelled, ignore
         return;
       }

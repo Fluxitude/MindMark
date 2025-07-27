@@ -14,7 +14,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Server client for API routes with request cookies
-export const createSupabaseServerClient = (request: NextRequest) => {
+export const createSupabaseServerClientWithRequest = (request: NextRequest) => {
   return createServerClient<Database>(
     supabaseUrl,
     supabaseAnonKey,
@@ -41,4 +41,5 @@ export const createSupabaseServerClient = (request: NextRequest) => {
 };
 
 // Alias for backward compatibility
-export const createSupabaseServerClientFromRequest = createSupabaseServerClient;
+export const createSupabaseServerClientFromRequest = createSupabaseServerClientWithRequest;
+export const createSupabaseServerClient = createSupabaseServerClientWithRequest;

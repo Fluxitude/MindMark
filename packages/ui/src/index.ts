@@ -40,5 +40,32 @@ export * from "./components/cult/minimal-card";
 export * from "./components/cult/neumorph-button";
 export * from "./components/cult/texture-card";
 
+// Export ExpandableCard components (explicit to avoid conflicts)
+export {
+  ExpandableCard,
+  ExpandableCardContent,
+  ExpandableCardHeader,
+  ExpandableCardFooter,
+  ExpandableTrigger as ExpandableCardTrigger
+} from "./components/expandable-card"
+
+export {
+  ExpandableCard as ExpandableCardV2,
+  ExpandableCardContent as ExpandableCardContentV2,
+  ExpandableCardHeader as ExpandableCardHeaderV2
+} from "./components/expandable-card-v2"
+export * from "./components/family-button";
+
+// Export media components
+export * from "./components/favicon";
+export * from "./components/screenshot";
+export * from "./components/resource-error-boundary";
+
+// Export view components
+export * from "./components/table";
+export * from "./components/bookmark-table-view";
+export * from "./components/bookmark-gallery-view";
+export * from "./components/bookmark-kanban-view";
+
 // Package version
 export const UI_VERSION = "0.1.0";

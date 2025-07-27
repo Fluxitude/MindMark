@@ -1,0 +1,28 @@
+$ next build
+   ▲ Next.js 15.4.3
+   - Environments: .env.local
+   - Experiments (use with caution):
+     ✓ optimizeCss
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 20.0s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/23) ...
+Error occurred prerendering page "/404". Read more: https://nextjs.org/docs/messages/prerender-error
+[Error: Cannot find module 'critters'
+Require stack:
+- D:\Fluxitude\Projects\MindMark\node_modules\next\dist\compiled\next-server\pages.runtime.prod.js
+- D:\Fluxitude\Projects\MindMark\apps\app\.next\server\pages\_document.js
+- D:\Fluxitude\Projects\MindMark\node_modules\next\dist\server\require.js
+- D:\Fluxitude\Projects\MindMark\node_modules\next\dist\server\load-components.js
+- D:\Fluxitude\Projects\MindMark\node_modules\next\dist\build\utils.js
+- D:\Fluxitude\Projects\MindMark\node_modules\next\dist\build\worker.js
+- D:\Fluxitude\Projects\MindMark\node_modules\next\dist\compiled\jest-worker\processChild.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+Export encountered an error on /_error: /404, exiting the build.
+ ⨯ Next.js build worker exited with code: 1 and signal: null
+error: script "build" exited with code 1

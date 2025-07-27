@@ -144,9 +144,6 @@ export function SearchResultsContent({ initialQuery }: SearchResultsContentProps
           <div className="flex-1">
             <SearchBar
               placeholder="Search your bookmarks..."
-              onSearch={handleSearch}
-              onResultClick={handleResultClick}
-              showResults={false}
             />
           </div>
           <Button

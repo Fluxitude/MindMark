@@ -1,7 +1,8 @@
-// Content Extraction Service
-// Web content scraping and analysis with Firecrawl
+// Enhanced Content Extraction Service
+// Web content scraping and analysis with Firecrawl and screenshot management
 
 import FirecrawlApp from "@mendable/firecrawl-js";
+import { createSupabaseClient } from "@mindmark/supabase";
 
 export interface ExtractedContent {
   title: string;
@@ -18,13 +19,27 @@ export interface ExtractedContent {
     language: string;
   };
   screenshot?: string;
+  thumbnails?: {
+    small: string;   // 300x200 for list view
+    medium: string;  // 600x400 for card view
+    large: string;   // 1200x800 for gallery view
+  };
 }
 
 export interface ExtractionOptions {
   includeScreenshot?: boolean;
+  includeThumbnails?: boolean;
   extractImages?: boolean;
   waitFor?: number;
   timeout?: number;
+  screenshotQuality?: number;
+  fullPageScreenshot?: boolean;
+}
+
+export interface ThumbnailSizes {
+  small: { width: 300; height: 200 };
+  medium: { width: 600; height: 400 };
+  large: { width: 1200; height: 800 };
 }
 
 export class ContentExtractor {

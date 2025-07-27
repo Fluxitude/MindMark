@@ -6,6 +6,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@mindmark/ui/button";
+import { Favicon } from "@mindmark/ui/favicon";
+import { ScreenshotMedium } from "@mindmark/ui/screenshot";
 import { cn } from "@mindmark/ui/cn";
 import {
   MoreHorizontal,
@@ -39,6 +41,15 @@ interface BookmarkCardProps {
 }
 
 // Helper functions for visual memory aids
+const extractDomain = (url: string): string => {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.hostname.replace('www.', '');
+  } catch {
+    return url;
+  }
+};
+
 function getContentTypeIcon(contentType: string) {
   switch (contentType) {
     case 'article':
@@ -155,51 +166,48 @@ export function BookmarkCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Visual Thumbnail Preview - Critical for Memory Recognition */}
-      {bookmark.screenshot_url && (
-        <div className="relative h-32 bg-muted overflow-hidden">
-          <img
-            src={bookmark.screenshot_url}
-            alt={`Preview of ${bookmark.title}`}
-            className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
-            onError={() => setImageError(true)}
-          />
-          {/* Content Type Badge Overlay - Neomorphic */}
-          <div className="absolute top-3 right-3">
-            <div
-              className={`px-2 py-1 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/20 shadow-lg flex items-center gap-1 ${getContentTypeColor(bookmark.content_type)}`}
-              style={{
-                background: 'rgba(255, 255, 255, 0.9)',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-              }}
-            >
-              {getContentTypeIcon(bookmark.content_type)}
-              <span className="capitalize">{bookmark.content_type}</span>
-            </div>
+      {/* Enhanced Visual Thumbnail Preview - Critical for Memory Recognition */}
+      <div className="relative">
+        <ScreenshotMedium
+          url={bookmark.url}
+          showLoadingState={true}
+          showErrorState={true}
+          showTooltip={false}
+          className="transition-transform duration-200 group-hover:scale-105"
+        />
+        {/* Content Type Badge Overlay - Neomorphic */}
+        <div className="absolute top-3 right-3">
+          <div
+            className={`px-2 py-1 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/20 shadow-lg flex items-center gap-1 ${getContentTypeColor(bookmark.content_type)}`}
+            style={{
+              background: 'rgba(255, 255, 255, 0.9)',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+            }}
+          >
+            {getContentTypeIcon(bookmark.content_type)}
+            <span className="capitalize">{bookmark.content_type}</span>
           </div>
         </div>
-      )}
+      </div>
 
       <div className="p-5 space-y-4">
         {/* Header: Favicon + Title + Actions */}
         <div className="flex items-start gap-3">
-          {/* Favicon with Cult UI neomorphic styling */}
+          {/* Enhanced Favicon with Cult UI neomorphic styling */}
           <div className={cn(
             "w-8 h-8 flex-shrink-0 rounded-lg flex items-center justify-center",
             "bg-neutral-100 dark:bg-neutral-700",
             "shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset]",
             "dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1)]"
           )}>
-            {bookmark.favicon_url && !imageError ? (
-              <img
-                src={bookmark.favicon_url}
-                alt=""
-                className="w-4 h-4 rounded-sm"
-                onError={() => setImageError(true)}
-              />
-            ) : (
-              <ExternalLink className="w-4 h-4 text-muted-foreground" />
-            )}
+            <Favicon
+              domain={extractDomain(bookmark.url)}
+              size={16}
+              showLoadingState={false}
+              showErrorState={true}
+              fallbackIcon={<ExternalLink className="w-4 h-4 text-muted-foreground" />}
+              className="rounded-sm"
+            />
           </div>
 
           {/* Title with enhanced typography */}

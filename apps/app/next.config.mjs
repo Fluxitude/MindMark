@@ -4,7 +4,16 @@ const nextConfig = {
   experimental: {
     // Optimize package imports for better tree shaking
     optimizePackageImports: ['@mindmark/ui', '@mindmark/supabase'],
+
+    // Enable optimized CSS loading
+    optimizeCss: true,
+
+    // Optimize font loading
+    optimizeServerReact: true,
   },
+
+  // Server external packages (moved from experimental)
+  serverExternalPackages: ['@supabase/supabase-js'],
 
   // Turbopack configuration (now stable!)
   turbopack: {
@@ -118,6 +127,26 @@ const nextConfig = {
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Cache API routes with shorter TTL
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=300, s-maxage=300',
+          },
+        ],
+      },
+      {
+        // Preload critical resources
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Link',
+            value: '</fonts/geist-sans.woff2>; rel=preload; as=font; type=font/woff2; crossorigin',
           },
         ],
       },

@@ -1,0 +1,24 @@
+$ next build
+   ▲ Next.js 15.4.3
+   - Environments: .env.local
+   - Experiments (use with caution):
+     ✓ optimizeCss
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 38.0s
+   Linting and checking validity of types ...
+Failed to compile.
+
+../../packages/ui/src/components/expandable-card.tsx:126:13
+Type error: Type 'string' is not assignable to type 'Easing | Easing[] | undefined'.
+
+[0m [90m 124 |[39m           transition[33m=[39m{{
+ [90m 125 |[39m             duration[33m:[39m transitionDuration[33m,[39m
+[31m[1m>[22m[39m[90m 126 |[39m             ease[33m:[39m easeType[33m,[39m
+ [90m     |[39m             [31m[1m^[22m[39m
+ [90m 127 |[39m             delay[33m:[39m initialDelay[33m,[39m
+ [90m 128 |[39m           }}
+ [90m 129 |[39m           {[33m...[39mprops}[0m
+Next.js build worker exited with code: 1 and signal: null
+error: script "build" exited with code 1

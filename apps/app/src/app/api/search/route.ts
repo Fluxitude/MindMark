@@ -2,7 +2,7 @@
 // Production-ready search with authentication, filtering, and pagination
 
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@mindmark/supabase";
+import { createSupabaseServerClientWithCookies } from "@mindmark/supabase";
 import { Client } from 'typesense';
 import { cookies } from 'next/headers';
 
@@ -23,7 +23,7 @@ const client = new Client({
 export async function GET(request: NextRequest) {
   try {
     // Create Supabase client for server-side auth with cookies
-    const supabase = createSupabaseServerClient(request);
+    const supabase = createSupabaseServerClientWithCookies(request);
 
     const { searchParams } = new URL(request.url);
 
@@ -163,7 +163,7 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         error: "Search failed",
-        message: error.message
+        message: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );
@@ -174,7 +174,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Create Supabase client with cookies for server-side auth
-    const supabase = createSupabaseServerClient(request);
+    const supabase = createSupabaseServerClientWithCookies(request);
 
     // Get current user from session
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -242,7 +242,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: "Failed to get suggestions",
-        message: error.message
+        message: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     );

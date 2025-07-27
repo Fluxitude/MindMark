@@ -1,9 +1,10 @@
 // MindMark Collections Hook
-// React hook for collection operations with real-time sync
+// React hook for collection operations with React Query and real-time sync
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createSupabaseClient } from "../client";
 import { MindMarkQueries } from "../queries";
 import type { Database } from "../types";
@@ -45,48 +46,57 @@ interface UseCollectionsReturn {
   refresh: () => Promise<void>;
 }
 
+// React Query keys for collections
+export const collectionsKeys = {
+  all: ['collections'] as const,
+  lists: () => [...collectionsKeys.all, 'list'] as const,
+  list: (filters: { isArchived?: boolean }) => [...collectionsKeys.lists(), filters] as const,
+  details: () => [...collectionsKeys.all, 'detail'] as const,
+  detail: (id: string) => [...collectionsKeys.details(), id] as const,
+};
+
 export function useCollections(options: UseCollectionsOptions = {}): UseCollectionsReturn {
   const { isArchived = false, realtime = true } = options;
 
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const supabase = createSupabaseClient();
-  const queries = new MindMarkQueries(supabase);
+  // Memoize supabase client and queries to prevent recreation on every render
+  const supabase = useMemo(() => createSupabaseClient(), []);
+  const queries = useMemo(() => new MindMarkQueries(supabase), [supabase]);
 
-  // Fetch collections
-  const fetchCollections = useCallback(async () => {
-    try {
-      setError(null);
-      setLoading(true);
-
-      // Get current user
+  // React Query for collections data with aggressive caching to prevent re-renders
+  const {
+    data: collections = [],
+    isLoading: loading,
+    error: queryError,
+    refetch
+  } = useQuery({
+    queryKey: collectionsKeys.list({ isArchived }),
+    queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         throw new Error("User not authenticated");
       }
+      return await queries.getCollections(user.id, { isArchived });
+    },
+    staleTime: Infinity, // Never consider data stale
+    gcTime: Infinity, // Never garbage collect
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchInterval: false,
+  });
 
-      const data = await queries.getCollections(user.id, { isArchived });
-      setCollections(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
-    }
-  }, [queries, isArchived]);
+  const error = queryError ? (queryError as Error).message : null;
 
-  // Initial fetch
-  useEffect(() => {
-    fetchCollections();
-  }, [fetchCollections]);
-
-  // Real-time subscription
+  // Temporarily disable real-time subscription to fix infinite re-render loop
+  // TODO: Re-enable after fixing the root cause
+  /*
   useEffect(() => {
     if (!realtime) return;
 
     const channel = supabase
-      .channel("collections_changes")
+      .channel(`collections_changes_${isArchived}`)
       .on(
         "postgres_changes",
         {
@@ -95,20 +105,10 @@ export function useCollections(options: UseCollectionsOptions = {}): UseCollecti
           table: "collections",
         },
         (payload) => {
-          if (payload.eventType === "INSERT") {
-            const newCollection = payload.new as Collection;
-            setCollections(prev => [newCollection, ...prev]);
-          } else if (payload.eventType === "UPDATE") {
-            const updatedCollection = payload.new as Collection;
-            setCollections(prev =>
-              prev.map(collection =>
-                collection.id === updatedCollection.id ? updatedCollection : collection
-              )
-            );
-          } else if (payload.eventType === "DELETE") {
-            const deletedId = payload.old.id;
-            setCollections(prev => prev.filter(collection => collection.id !== deletedId));
-          }
+          // Invalidate and refetch collections data
+          queryClient.invalidateQueries({
+            queryKey: collectionsKeys.list({ isArchived })
+          });
         }
       )
       .subscribe();
@@ -116,54 +116,76 @@ export function useCollections(options: UseCollectionsOptions = {}): UseCollecti
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, realtime]);
+  }, [supabase, realtime, isArchived, queryClient]);
+  */
 
-  // Create collection
+  // Create collection mutation
+  const createCollectionMutation = useMutation({
+    mutationFn: async (data: CreateCollectionInput) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+      return await queries.createCollection(user.id, data);
+    },
+    onSuccess: () => {
+      // Invalidate and refetch collections
+      queryClient.invalidateQueries({
+        queryKey: collectionsKeys.lists()
+      });
+    },
+  });
+
+  // Mutation functions using React Query
   const createCollection = useCallback(async (data: CreateCollectionInput): Promise<Collection> => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      throw new Error("User not authenticated");
-    }
+    return await createCollectionMutation.mutateAsync(data);
+  }, [createCollectionMutation]);
 
-    const result = await queries.createCollection(user.id, data);
-    return result;
-  }, [queries, supabase]);
-
-  // Update collection
   const updateCollection = useCallback(async (id: string, data: UpdateCollectionInput): Promise<Collection> => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       throw new Error("User not authenticated");
     }
-
     const result = await queries.updateCollection(id, user.id, data);
+    // Invalidate queries after update
+    queryClient.invalidateQueries({
+      queryKey: collectionsKeys.lists()
+    });
     return result;
-  }, [queries, supabase]);
+  }, [queries, supabase, queryClient]);
 
-  // Delete collection
   const deleteCollection = useCallback(async (id: string): Promise<void> => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       throw new Error("User not authenticated");
     }
-
     await queries.deleteCollection(id, user.id);
-  }, [queries, supabase]);
+    // Invalidate queries after delete
+    queryClient.invalidateQueries({
+      queryKey: collectionsKeys.lists()
+    });
+  }, [queries, supabase, queryClient]);
 
-  // Add bookmark to collection
   const addBookmarkToCollection = useCallback(async (bookmarkId: string, collectionId: string): Promise<void> => {
     await queries.addBookmarkToCollection(bookmarkId, collectionId);
-  }, [queries]);
+    // Invalidate queries after adding bookmark
+    queryClient.invalidateQueries({
+      queryKey: collectionsKeys.lists()
+    });
+  }, [queries, queryClient]);
 
-  // Remove bookmark from collection
   const removeBookmarkFromCollection = useCallback(async (bookmarkId: string, collectionId: string): Promise<void> => {
     await queries.removeBookmarkFromCollection(bookmarkId, collectionId);
-  }, [queries]);
+    // Invalidate queries after removing bookmark
+    queryClient.invalidateQueries({
+      queryKey: collectionsKeys.lists()
+    });
+  }, [queries, queryClient]);
 
-  // Refresh collections
+  // Refresh collections using React Query
   const refresh = useCallback(async () => {
-    await fetchCollections();
-  }, [fetchCollections]);
+    await refetch();
+  }, [refetch]);
 
   return {
     collections,

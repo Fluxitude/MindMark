@@ -8,10 +8,11 @@ import { Monitor, Moon, Sun, Check } from "lucide-react";
 
 type Theme = "light" | "dark" | "system";
 
-interface ThemeToggleProps extends React.ComponentProps<typeof Button> {
+interface ThemeToggleProps extends Omit<React.ComponentProps<typeof Button>, "variant"> {
   theme?: Theme;
   onThemeChange?: (theme: Theme) => void;
   variant?: "toggle" | "dropdown";
+  buttonVariant?: React.ComponentProps<typeof Button>["variant"];
 }
 
 // Hook for theme management
@@ -68,7 +69,7 @@ export function useTheme() {
 }
 
 const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
-  ({ className, theme: controlledTheme, onThemeChange, variant = "toggle", ...props }, ref) => {
+  ({ className, theme: controlledTheme, onThemeChange, variant = "toggle", buttonVariant = "outline", ...props }, ref) => {
     const { theme, resolvedTheme, changeTheme } = useTheme();
     const currentTheme = controlledTheme ?? theme;
 
@@ -90,7 +91,7 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
           <DropdownMenuTrigger asChild>
             <Button
               ref={ref}
-              variant="outline"
+              variant={buttonVariant}
               size="icon"
               className={cn(
                 "relative transition-colors",
@@ -130,7 +131,7 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
     return (
       <Button
         ref={ref}
-        variant="outline"
+        variant={buttonVariant}
         size="icon"
         onClick={toggleTheme}
         className={cn(
@@ -163,5 +164,5 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
 
 ThemeToggle.displayName = "ThemeToggle";
 
-export { ThemeToggle, useTheme };
+export { ThemeToggle };
 export type { ThemeToggleProps, Theme };

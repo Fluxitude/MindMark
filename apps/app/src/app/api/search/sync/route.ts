@@ -2,7 +2,7 @@
 // Handle bookmark sync operations with Typesense
 
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@mindmark/supabase/server-client";
+import { createSupabaseServerClientWithRequest } from "@mindmark/supabase";
 import { Client } from 'typesense';
 
 // Create Typesense client
@@ -40,7 +40,7 @@ function transformBookmarkForIndex(bookmark: any) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabaseServerClientWithRequest(request);
     
     // Get current user from session
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({
             success: false,
             error: "Failed to index bookmark",
-            message: error.message,
+            message: error instanceof Error ? error.message : String(error),
           }, { status: 500 });
         }
 
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({
             success: false,
             error: "Failed to update bookmark",
-            message: error.message,
+            message: error instanceof Error ? error.message : String(error),
           }, { status: 500 });
         }
 
@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({
             success: false,
             error: "Failed to delete bookmark",
-            message: error.message,
+            message: error instanceof Error ? error.message : String(error),
           }, { status: 500 });
         }
 
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
               await client.collections('bookmarks').documents().upsert(document);
               indexed++;
             } catch (error) {
-              errors.push({ id: document.id, error: error.message });
+              errors.push({ id: document.id, error: error instanceof Error ? error.message : String(error) });
             }
           }
           
@@ -168,7 +168,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({
             success: false,
             error: "Failed to re-index bookmarks",
-            message: error.message,
+            message: error instanceof Error ? error.message : String(error),
           }, { status: 500 });
         }
 
@@ -185,7 +185,7 @@ export async function POST(request: NextRequest) {
       { 
         success: false, 
         error: "Sync operation failed",
-        message: error.message 
+        message: error instanceof Error ? error.message : String(error)
       }, 
       { status: 500 }
     );

@@ -20,6 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={GeistSans.className}>
+
       <body className={GeistSans.className}>
         <MonitoringProvider>
           <NuqsAdapter>

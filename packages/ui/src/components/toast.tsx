@@ -6,16 +6,18 @@ import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react"
 import { cn } from "../utils/cn"
 
 const toastVariants = cva(
-  // Cult UI signature 16px border radius for toasts
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-[16px] p-4 transition-all duration-300",
-  // Cult UI neomorphic background and borders
-  "bg-neutral-50 dark:bg-neutral-800 border border-white/60 dark:border-neutral-700/50",
-  // Cult UI complex shadow system for floating elements
-  "shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.5)]",
-  "dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1),0_2px_2px_0_rgba(0,0,0,0.1),0_4px_4px_0_rgba(0,0,0,0.1)]",
-  // Enhanced shadow for floating toasts
-  "shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)]",
-  "dark:shadow-[0_10px_15px_-3px_rgba(0,0,0,0.4),0_4px_6px_-2px_rgba(0,0,0,0.2)]",
+  // Cult UI signature 16px border radius for toasts with base styles
+  [
+    "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-[16px] p-4 transition-all duration-300",
+    // Cult UI neomorphic background and borders
+    "bg-neutral-50 dark:bg-neutral-800 border border-white/60 dark:border-neutral-700/50",
+    // Cult UI complex shadow system for floating elements
+    "shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.5)]",
+    "dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1),0_2px_2px_0_rgba(0,0,0,0.1),0_4px_4px_0_rgba(0,0,0,0.1)]",
+    // Enhanced shadow for floating toasts
+    "shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)]",
+    "dark:shadow-[0_10px_15px_-3px_rgba(0,0,0,0.4),0_4px_6px_-2px_rgba(0,0,0,0.2)]"
+  ],
   {
     variants: {
       variant: {

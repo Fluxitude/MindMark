@@ -123,7 +123,6 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
     <CommandDialog
       open={open}
       onOpenChange={onOpenChange}
-      className="max-w-2xl"
     >
       {/* Enhanced Header with AI Branding */}
       <div className="flex items-center gap-3 p-4 border-b border-border">

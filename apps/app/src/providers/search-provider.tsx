@@ -3,11 +3,16 @@
 
 "use client";
 
-console.log("🔍 SearchProvider: Module loaded!");
+// Only log in development
+if (process.env.NODE_ENV === 'development') {
+  console.log("🔍 SearchProvider: Module loaded!");
+}
 
-import React, { createContext, useContext, useState, useCallback } from "react";
-import { SearchModal } from "../components/search/search-modal";
+import React, { createContext, useContext, useState, useCallback, lazy, Suspense } from "react";
 import { useSearchShortcuts } from "../hooks/useKeyboardShortcuts";
+
+// Lazy load SearchModal for better performance
+const SearchModal = lazy(() => import("../components/search/search-modal").then(module => ({ default: module.SearchModal })));
 
 interface SearchContextType {
   isSearchOpen: boolean;
@@ -31,22 +36,30 @@ interface SearchProviderProps {
 }
 
 export function SearchProvider({ children }: SearchProviderProps) {
-  console.log("🔍 SearchProvider: Initializing...");
+  if (process.env.NODE_ENV === 'development') {
+    console.log("🔍 SearchProvider: Initializing...");
+  }
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const openSearch = useCallback(() => {
-    console.log("🔍 SearchProvider: Opening search modal");
+    if (process.env.NODE_ENV === 'development') {
+      console.log("🔍 SearchProvider: Opening search modal");
+    }
     setIsSearchOpen(true);
   }, []);
 
   const closeSearch = useCallback(() => {
-    console.log("🔍 SearchProvider: Closing search modal");
+    if (process.env.NODE_ENV === 'development') {
+      console.log("🔍 SearchProvider: Closing search modal");
+    }
     setIsSearchOpen(false);
   }, []);
 
   const toggleSearch = useCallback(() => {
-    console.log("🔍 SearchProvider: Toggling search modal");
+    if (process.env.NODE_ENV === 'development') {
+      console.log("🔍 SearchProvider: Toggling search modal");
+    }
     setIsSearchOpen(prev => !prev);
   }, []);
 
@@ -60,15 +73,22 @@ export function SearchProvider({ children }: SearchProviderProps) {
     toggleSearch,
   };
 
-  console.log("🔍 SearchProvider: Rendering with value:", value);
+  if (process.env.NODE_ENV === 'development') {
+    console.log("🔍 SearchProvider: Rendering with value:", value);
+  }
 
   return (
     <SearchContext.Provider value={value}>
       {children}
-      <SearchModal
-        open={isSearchOpen}
-        onOpenChange={setIsSearchOpen}
-      />
+      {/* Lazy load SearchModal only when needed */}
+      {isSearchOpen && (
+        <Suspense fallback={null}>
+          <SearchModal
+            open={isSearchOpen}
+            onOpenChange={setIsSearchOpen}
+          />
+        </Suspense>
+      )}
     </SearchContext.Provider>
   );
 }

@@ -1,8 +1,12 @@
 // MindMark Supabase Package
 // Database operations, auth, and real-time features
 
-export * from "./client";
-export * from "./server-client";
+// Export client functions with explicit names to avoid conflicts
+export { createSupabaseClient, createSupabaseServiceClient } from "./client";
+export { createSupabaseServerClient as createSupabaseServerClientWithCookies, createSupabaseServerClientWithRequest, createSupabaseServerClientFromRequest } from "./server-client";
+
+// Export the service client as the default server client for most use cases
+export { createSupabaseServiceClient as createSupabaseServerClient } from "./client";
 export * from "./auth";
 export * from "./queries";
 
@@ -17,11 +21,11 @@ export { useBookmarks, useCreateBookmark, useUpdateBookmark, useDeleteBookmark, 
 export { useBookmarks as useLegacyBookmarks } from "./hooks/useBookmarks";
 export * from "./hooks/useBookmark";
 export * from "./hooks/useCollections";
-export * from "./hooks/useInstantSearch";
 
-// Export Typesense search hooks
-export * from "./hooks/useTypesenseSearch";
-export * from "./hooks/useTypesenseSync";
+// Export search hooks with explicit names to avoid conflicts
+export { useInstantSearch } from "./hooks/useInstantSearch";
+export { useTypesenseSearch, useTypesenseInstantSearch, useSimpleSearch, useSearchSuggestions } from "./hooks/useTypesenseSearch";
+export { useTypesenseSync } from "./hooks/useTypesenseSync";
 
 // Export utilities
 export * from "./utils/url-validation";

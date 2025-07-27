@@ -312,7 +312,7 @@ export function useSearchSuggestions(query: string) {
 }
 
 // Instant search hook for search-as-you-type
-export function useInstantSearch(initialQuery = "", debounceMs = 300) {
+export function useTypesenseInstantSearch(initialQuery = "", debounceMs = 300) {
   const [query, setQuery] = useState(initialQuery);
   const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
 
@@ -356,3 +356,6 @@ export function useInstantSearch(initialQuery = "", debounceMs = 300) {
     isLoadingSuggestions: suggestions.isLoadingSuggestions,
   };
 }
+
+// Alias for backward compatibility
+export const useInstantSearch = useTypesenseInstantSearch;

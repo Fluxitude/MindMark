@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "@mindmark/ui/card";
 import { Button } from "@mindmark/ui/button";
 import { Input } from "@mindmark/ui/input";
 import { useCreateBookmark, useAuth, useTypesenseSync } from "@mindmark/supabase";
+import type { CreateBookmarkInput } from "@mindmark/types";
 import { Plus, X, Link, FileText, Tag } from "lucide-react";
 
 interface AddBookmarkDialogProps {
@@ -47,10 +48,10 @@ export function AddBookmarkDialog({ isOpen, onClose, onSuccess }: AddBookmarkDia
       });
 
       // Create bookmark with optimistic updates (no timeout)
-      const bookmarkData = {
+      const bookmarkData: CreateBookmarkInput = {
         url: url.trim(),
         title: title.trim() || "Untitled",
-        description: description.trim() || null,
+        description: description.trim() || undefined,
         content_type: "webpage",
       };
 
@@ -59,12 +60,12 @@ export function AddBookmarkDialog({ isOpen, onClose, onSuccess }: AddBookmarkDia
       console.log("Bookmark created successfully:", result);
 
       // Sync with Typesense (non-blocking)
-      if (result?.data) {
+      if (result) {
         indexBookmark({
-          ...result.data,
+          ...result,
           user_id: user.id,
         });
-        console.log("🔄 Syncing bookmark with Typesense:", result.data.id);
+        console.log("🔄 Syncing bookmark with Typesense:", result.id);
       }
 
       // Reset form immediately

@@ -3,7 +3,7 @@
 
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,7 +13,6 @@ import { cn } from "@mindmark/ui/cn";
 import { UserProfile } from "@mindmark/ui/user-profile";
 import { UserAvatar } from "@mindmark/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@mindmark/ui/dropdown-menu";
-import { useCollections } from "@mindmark/supabase";
 import { useAuth } from "@mindmark/supabase";
 import { CreateCollectionDialog } from "./collections/create-collection-dialog";
 import {
@@ -36,12 +35,18 @@ import {
   Settings,
   LogOut,
   Palette,
+  Search,
+  Archive,
+  LayoutDashboard,
 } from "lucide-react";
+import { useSearch } from "../providers/search-provider";
 
 interface SidebarProps {
   isCollapsed?: boolean;
   onToggle?: (collapsed: boolean) => void;
 }
+
+
 
 export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(isCollapsed);
@@ -53,14 +58,8 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   // Authentication
   const { user, signOut } = useAuth();
 
-  // Fetch collections data
-  const { collections, loading: collectionsLoading, error: collectionsError } = useCollections({ isArchived: false });
-
   // Create collection dialog state
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-
-  // Debug collections data
-  console.log('🔍 Sidebar collections:', { collections, collectionsLoading, collectionsError });
 
   // Helper function to get icon for collection
   const getCollectionIcon = (iconName: string) => {
@@ -132,60 +131,58 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
     onToggle?.(newCollapsed);
   };
 
-  // Simplified navigation - only essential items for cognitive accessibility
-  const navigationItems = [
+  // Get search context
+  const { openSearch } = useSearch();
+
+  // Notion-inspired navigation structure - Top items
+  const topNavigationItems = [
+    {
+      label: "Search",
+      action: "search",
+      icon: Search,
+      onClick: openSearch,
+      description: "Search your bookmarks",
+      isClickable: true
+    },
     {
       label: "Home",
-      href: "/dashboard",
+      href: "/home",
       icon: Home,
-      active: pathname === "/dashboard",
-      description: "Your bookmark dashboard"
+      active: pathname === "/home",
+      description: "Your AI-powered knowledge assistant"
+    },
+    {
+      label: "Bookmarks",
+      href: "/bookmarks",
+      icon: BookOpen,
+      active: pathname === "/bookmarks",
+      description: "Manage your bookmark collection"
+    },
+    {
+      label: "Collections",
+      action: "collections",
+      icon: FolderOpen,
+      description: "View and manage all collections",
+      hasCreateButton: true,
+      isClickable: false // Non-clickable for now during UI overhaul
     },
   ];
 
-
-
-  // Top collections only (max 3-5 for cognitive load reduction)
-  const topCollections = collectionsLoading || !collections || collections.length === 0
-    ? [
-        // Fallback to mock data while loading or if no collections exist
-        {
-          label: "AI & Tech",
-          icon: Brain,
-          count: 8,
-          href: "/collections/ai",
-          color: "text-blue-600"
-        },
-        {
-          label: "Learning",
-          icon: BookOpen,
-          count: 12,
-          href: "/collections/learning",
-          color: "text-green-600"
-        },
-        {
-          label: "Tools",
-          icon: Wrench,
-          count: 6,
-          href: "/collections/tools",
-          color: "text-purple-600"
-        },
-      ]
-    : collections.slice(0, 5).map(collection => ({
-        label: collection.name,
-        icon: getCollectionIcon(collection.icon),
-        count: collection.bookmark_count,
-        href: `/collections/${collection.id}`,
-        color: collection.color || "text-gray-600"
-      }));
-
-  // User/management section - minimal options
-  const managementSection = [
+  // Bottom navigation items (utility items)
+  const bottomNavigationItems = [
     {
-      label: "All Collections",
-      icon: FolderOpen,
-      href: "/collections",
-      description: "View and manage all collections"
+      label: "Archive",
+      href: "/archive",
+      icon: Archive,
+      active: pathname === "/archive",
+      description: "Archived bookmarks"
+    },
+    {
+      label: "Settings",
+      href: "/settings",
+      icon: Settings,
+      active: pathname === "/settings",
+      description: "Application settings"
     },
   ];
 
@@ -330,17 +327,105 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto">
-          {/* Main Navigation */}
+        <div className="flex-1 overflow-y-auto flex flex-col">
+          {/* Top Navigation */}
           <div className={cn("p-2", collapsed && "px-1")}>
-            {!collapsed && (
-              <h3 className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Navigation
-              </h3>
-            )}
             <nav className={cn("space-y-1", collapsed && "space-y-2")}>
-              {navigationItems.map((item) => (
-                <Link key={item.href} href={item.href}>
+              {topNavigationItems.map((item) => {
+                // Handle Collections item with create button separately to avoid button nesting
+                if (item.hasCreateButton) {
+                  return (
+                    <div key={item.action || item.label} className="flex items-center gap-1">
+                      <button
+                        className={cn(
+                          "flex-1 flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-left",
+                          item.active
+                            ? "bg-secondary text-secondary-foreground"
+                            : "hover:bg-muted text-muted-foreground hover:text-foreground",
+                          collapsed && "justify-center px-2"
+                        )}
+                        title={collapsed ? item.label : undefined}
+                        onClick={item.isClickable ? item.onClick : undefined}
+                      >
+                        {(() => {
+                          const IconComponent = item.icon;
+                          return <IconComponent className="h-4 w-4 flex-shrink-0" />;
+                        })()}
+                        {!collapsed && <span className="flex-1">{item.label}</span>}
+                      </button>
+                      {!collapsed && (
+                        <button
+                          className="h-8 w-8 flex items-center justify-center hover:bg-muted rounded transition-colors"
+                          title="Create new collection"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsCreateDialogOpen(true);
+                          }}
+                        >
+                          <Plus className="h-3 w-3" />
+                        </button>
+                      )}
+                    </div>
+                  );
+                }
+
+                const buttonContent = (
+                  <Button
+                    variant={item.active ? "secondary" : "ghost"}
+                    size={collapsed ? "icon" : "default"}
+                    className={cn(
+                      "w-full transition-all duration-200",
+                      collapsed
+                        ? "h-10 w-10 mx-auto flex items-center justify-center"
+                        : "justify-start"
+                    )}
+                    title={collapsed ? item.label : undefined}
+                    onClick={item.isClickable ? item.onClick : undefined}
+                  >
+                    {(() => {
+                      const IconComponent = item.icon;
+                      return <IconComponent className="h-4 w-4 flex-shrink-0" />;
+                    })()}
+                    {!collapsed && <span className="ml-3">{item.label}</span>}
+                  </Button>
+                );
+
+                // If it's a clickable item (like Search), render button directly
+                if (item.isClickable) {
+                  return (
+                    <div key={item.action || item.label}>
+                      {buttonContent}
+                    </div>
+                  );
+                }
+
+                // If it's explicitly non-clickable (like Collections during overhaul), render as disabled
+                if (item.isClickable === false) {
+                  return (
+                    <div key={item.action || item.label}>
+                      {buttonContent}
+                    </div>
+                  );
+                }
+
+                // Otherwise, wrap in Link
+                return (
+                  <Link key={item.href} href={item.href!}>
+                    {buttonContent}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Spacer to push bottom items down */}
+          <div className="flex-1" />
+
+          {/* Bottom Navigation */}
+          <div className={cn("p-2 border-t border-border", collapsed && "px-1")}>
+            <nav className={cn("space-y-1", collapsed && "space-y-2")}>
+              {bottomNavigationItems.map((item) => {
+                const buttonContent = (
                   <Button
                     variant={item.active ? "secondary" : "ghost"}
                     size={collapsed ? "icon" : "default"}
@@ -358,87 +443,14 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                     })()}
                     {!collapsed && <span className="ml-3">{item.label}</span>}
                   </Button>
-                </Link>
-              ))}
-            </nav>
-          </div>
+                );
 
-          {/* Smart Collections */}
-          <div className={cn("p-2 border-t border-border", collapsed && "px-1")}>
-            {!collapsed && (
-              <div className="flex items-center justify-between px-2 py-1">
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Collections
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 hover:bg-muted"
-                  title="Add collection"
-                  onClick={() => setIsCreateDialogOpen(true)}
-                >
-                  <Plus className="h-3 w-3" />
-                </Button>
-              </div>
-            )}
-            <nav className={cn("space-y-1", collapsed && "space-y-2")}>
-              {topCollections.map((collection) => (
-                <Link key={collection.href} href={collection.href}>
-                  <Button
-                    variant="ghost"
-                    size={collapsed ? "icon" : "default"}
-                    className={cn(
-                      "w-full transition-all duration-200",
-                      collapsed
-                        ? "h-10 w-10 mx-auto flex items-center justify-center"
-                        : "justify-start"
-                    )}
-                    title={collapsed ? `${collection.label} (${collection.count})` : undefined}
-                  >
-                    {(() => {
-                      const IconComponent = collection.icon;
-                      return <IconComponent className="h-4 w-4 flex-shrink-0" />;
-                    })()}
-                    {!collapsed && (
-                      <>
-                        <span className="ml-3 flex-1 text-left">{collection.label}</span>
-                        <Badge variant="secondary" className="text-xs ml-2">
-                          {collection.count}
-                        </Badge>
-                      </>
-                    )}
-                  </Button>
-                </Link>
-              ))}
-            </nav>
-          </div>
-
-          {/* Management Section - Simplified */}
-          <div className={cn("p-2 border-t border-border", collapsed && "px-1")}>
-            <nav className={cn("space-y-1", collapsed && "space-y-2")}>
-              {managementSection.map((item) => (
-                <Link key={item.href} href={item.href}>
-                  <Button
-                    variant="ghost"
-                    size={collapsed ? "icon" : "default"}
-                    className={cn(
-                      "w-full transition-all duration-200",
-                      collapsed
-                        ? "h-10 w-10 mx-auto flex items-center justify-center"
-                        : "justify-start"
-                    )}
-                    title={collapsed ? item.label : undefined}
-                  >
-                    {(() => {
-                      const IconComponent = item.icon;
-                      return <IconComponent className="h-4 w-4 flex-shrink-0" />;
-                    })()}
-                    {!collapsed && (
-                      <span className="ml-3 flex-1 text-left">{item.label}</span>
-                    )}
-                  </Button>
-                </Link>
-              ))}
+                return (
+                  <Link key={item.href} href={item.href!}>
+                    {buttonContent}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
 
